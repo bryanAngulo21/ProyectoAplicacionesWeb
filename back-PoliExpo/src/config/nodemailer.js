@@ -1,18 +1,8 @@
-import nodemailer from "nodemailer"
-import dotenv from "dotenv"
-dotenv.config()
+import sgMail from '@sendgrid/mail';
+import dotenv from 'dotenv';
+dotenv.config();
 
-
-
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    host: process.env.HOST_MAILTRAP,
-    port: process.env.PORT_MAILTRAP,
-    auth: {
-    user: process.env.USER_MAILTRAP,
-    pass: process.env.PASS_MAILTRAP,
-    },
-})
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
  * Función genérica para enviar correos
@@ -21,21 +11,19 @@ const transporter = nodemailer.createTransport({
  * @param {string} html - Contenido HTML del correo
  */
 const sendMail = async (to, subject, html) => {
+  try {
+    const msg = {
+      to,
+      from: 'andiubra9722@gmail.com', // correo verificado en SendGrid
+      subject,
+      html,
+    };
 
-    try {
-        const info = await transporter.sendMail({
-            from: '"POLIEXPO" <andiubra9722@gmail.com>',
-            to,
-            subject,
-            html,
-        })
-        console.log("✅ Email enviado:", info.messageId)
+    const info = await sgMail.send(msg);
+    console.log('✅ Email enviado:', info);
+  } catch (error) {
+    console.error('❌ Error enviando email:', error.message);
+  }
+};
 
-    } catch (error) {
-        console.error("❌ Error enviando email:", error.message)
-    }
-}
-
-
-
-export default sendMail 
+export default sendMail;
