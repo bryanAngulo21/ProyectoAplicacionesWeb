@@ -12,7 +12,7 @@ const connection = async () => {
       ? process.env.MONGODB_URI_PRODUCTION
       : process.env.MONGODB_URI_LOCAL;
 
-    const conn = await mongoose.connect(uri); // ya no hace falta useNewUrlParser ni useUnifiedTopology
+    const conn = await mongoose.connect(uri); 
     console.log(`✅ Database connected: ${conn.connection.name} on ${conn.connection.host}`);
   } catch (error) {
     console.error('❌ Error connecting to database:', error);
