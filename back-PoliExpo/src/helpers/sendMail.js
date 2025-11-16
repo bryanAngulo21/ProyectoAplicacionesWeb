@@ -7,7 +7,7 @@ const sendMailToRegister = (userMail, token) => {
         userMail,
         "Bienvenido a PoliExpo ",
         `
-            <h1>Confirma tu cuenta</h1>
+            <h1>Confirma tu cuenta ahora</h1>
             <p>Hola, haz clic en el siguiente enlace para confirmar tu cuenta:</p>
             <a href="${process.env.URL_FRONTEND}confirm/${token}">
             Confirmar cuenta
