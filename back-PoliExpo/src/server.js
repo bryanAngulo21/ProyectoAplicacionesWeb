@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import cors from 'cors';
 
 
+
 // Inicializaciones
 const app = express()
 dotenv.config()
@@ -31,9 +32,6 @@ app.get('/',(req,res)=> res.send("Server on"))
 import routerEstudiantes from './routers/estudiante_routers.js'
 
 
-// Ruta principal
-app.get('/',(req,res)=>res.send("Server on"))
-
 // Rutas para estudiantes
 app.use('/api',routerEstudiantes)
 
@@ -44,6 +42,10 @@ app.use('/api', routerReconocimiento)
 // Manejo de una ruta que no sea encontrada
 app.use((req,res)=>res.status(404).send("Endpoint no encontrado - 404"))
 
+// Importar la conexión a la base de datos
+import connection from './database.js';
+// Conectar a MongoDB
+connection();
 
 // Exportar la instancia de express por medio de app
 export default  app
