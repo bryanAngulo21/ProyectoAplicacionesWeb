@@ -1,6 +1,7 @@
 import {Router} from 'express'
-import { comprobarTokenPasword, confirmarMail, crearNuevoPassword, login, recuperarPassword, registro } 
+import { comprobarTokenPasword, confirmarMail, crearNuevoPassword, login, perfil, recuperarPassword, registro } 
 from '../controllers/estudiante_controller.js'
+import { verificarTokenJWT } from '../middlewares/JWT.js'
 const router = Router()
 
 
@@ -12,5 +13,7 @@ router.get('/recuperarpassword/:token',comprobarTokenPasword)
 router.post('/nuevopassword/:token',crearNuevoPassword)
 
 router.post('/estudiante/login',login)
+
+router.get('/estudiante/perfil',verificarTokenJWT,perfil)
 
 export default router

@@ -1,9 +1,13 @@
 import { useState } from "react"
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"
+
 import { Link, useNavigate } from "react-router"
 import {useFetch} from '../hooks/useFetch'
 import { ToastContainer } from 'react-toastify'
 import { useForm } from 'react-hook-form'
+
+//proteccion de rutas
+import storeAuth from "../context/storeAuth"
 
 
 const Login = () => {
@@ -12,9 +16,15 @@ const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm()
     const  fetchDataBackend = useFetch()
 
+    const { setToken, setRol } = storeAuth()
+
     const loginUser = async(dataForm) => {
         const url = `${import.meta.env.VITE_BACKEND_URL}/estudiante/login`
+        //const url = `${import.meta.env.VITE_BACKEND_URL}/login`
         const response = await fetchDataBackend(url, dataForm,'POST')
+        setToken(response.token)
+        setRol(response.rol)
+        
         if(response){
             navigate('/dashboard')
         }
@@ -75,10 +85,7 @@ const Login = () => {
                             </div>
                         </div>
 
-                        {/* Botón login 
-                        <Link to="/dashboard" className="block w-full py-3 text-center bg-blue-500 text-white rounded-xl hover:bg-blue-600 duration-300 font-medium">
-                            Iniciar sesión
-                        </Link>*/}
+                        
 
                    {/* Botón login */}
                             <button className="block w-full py-3 text-center bg-blue-500 text-white rounded-xl hover:bg-blue-600 duration-300 font-medium"
