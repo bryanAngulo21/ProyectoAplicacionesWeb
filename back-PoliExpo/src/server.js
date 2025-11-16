@@ -3,8 +3,6 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors';
 
-import routerEstudiantes from './routers/estudiante_routers.js'
-
 // Inicializaciones
 const app = express()
 dotenv.config()
@@ -27,6 +25,9 @@ app.set('port',process.env.PORT || 3000)
 
 // Rutas 
 app.get('/',(req,res)=> res.send("Server on"))
+
+// Agregar las rutas de estudiantes
+import routerEstudiantes from './routers/estudiante_routers.js'
 
 // Ruta principal
 app.get('/',(req,res)=>res.send("Server on"))

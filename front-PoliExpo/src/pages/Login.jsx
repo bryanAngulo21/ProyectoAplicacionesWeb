@@ -1,13 +1,29 @@
 import { useState } from "react"
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
+import {useFetch} from '../hooks/useFetch'
+import { ToastContainer } from 'react-toastify'
+import { useForm } from 'react-hook-form'
+
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate()
+    const { register, handleSubmit, formState: { errors } } = useForm()
+    const  fetchDataBackend = useFetch()
+
+    const loginUser = async(dataForm) => {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/estudiante/login`
+        const response = await fetchDataBackend(url, dataForm,'POST')
+        if(response){
+            navigate('/dashboard')
+        }
+    }
 
     return (
         <div className="font-inter min-h-screen flex justify-center items-center relative">
-            
+             <ToastContainer />
+
             {/* Imagen de fondo */}
             <div 
                 className="absolute inset-0 bg-[url('/public/images/landscape_login.jpg')] bg-cover bg-center bg-fixed z-0"
@@ -23,7 +39,7 @@ const Login = () => {
                     <p className="text-gray-600 text-center my-4">Por favor ingresa tus datos</p>
 
                     {/* Formulario */}
-                    <form>
+                     <form onSubmit={handleSubmit(loginUser)}>
 
                         {/* Campo Correo */}
                         <div className="mb-4">
@@ -32,7 +48,9 @@ const Login = () => {
                                 type="email"
                                 placeholder="Ingresa tu correo"
                                 className="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-4 py-3 transition duration-200"
+                            {...register("email", { required: "El correo es obligatorio" })}
                             />
+                                {errors.email && <p className="text-red-800">{errors.email.message}</p>}
                         </div>
 
                         {/* Campo Contraseña */}
@@ -43,7 +61,9 @@ const Login = () => {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="************"
                                     className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-12 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                                 {...register("password", { required: "La contraseña es obligatoria" })}
                                 />
+                                    {errors.password && <p className="text-red-800">{errors.password.message}</p>}
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
@@ -55,12 +75,17 @@ const Login = () => {
                             </div>
                         </div>
 
-                        {/* Botón login */}
+                        {/* Botón login 
                         <Link to="/dashboard" className="block w-full py-3 text-center bg-blue-500 text-white rounded-xl hover:bg-blue-600 duration-300 font-medium">
                             Iniciar sesión
-                        </Link>
+                        </Link>*/}
+
+                   {/* Botón login */}
+                            <button className="block w-full py-3 text-center bg-blue-500 text-white rounded-xl hover:bg-blue-600 duration-300 font-medium"
+                            >Iniciar sesión</button>
 
                     </form>
+
 
                     {/* Separador */}
                     <div className="mt-6 flex items-center text-gray-400">
