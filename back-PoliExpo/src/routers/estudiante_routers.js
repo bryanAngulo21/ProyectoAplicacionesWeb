@@ -16,4 +16,7 @@ router.post('/estudiante/login',login)
 
 router.get('/estudiante/perfil',verificarTokenJWT,perfil)
 
+router.get('/prueba',prueba)
+
+
 export default router
