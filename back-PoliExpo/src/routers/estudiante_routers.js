@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import { comprobarTokenPasword, confirmarMail, crearNuevoPassword, login, perfil, recuperarPassword, registro } 
+import { comprobarTokenPasword, confirmarMail, crearNuevoPassword, login, perfil, recuperarPassword, registro , prueba} 
 from '../controllers/estudiante_controller.js'
 import { verificarTokenJWT } from '../middlewares/JWT.js'
 const router = Router()
