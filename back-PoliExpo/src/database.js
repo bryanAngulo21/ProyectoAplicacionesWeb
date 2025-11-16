@@ -1,30 +1,26 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-dotenv.config(); // cargar variables de entorno
+dotenv.config();
 
 mongoose.set('strictQuery', true);
 
 const connection = async () => {
   try {
-    // Elegir URI según el entorno
+    // Elegir URI según entorno
     const uri = process.env.NODE_ENV === 'production'
       ? process.env.MONGODB_URI_PRODUCTION
       : process.env.MONGODB_URI_LOCAL;
 
-    const conn = await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000 // 5 segundos de timeout
-    });
-
-    console.log(`✅ Database connected: ${conn.connection.name} on ${conn.connection.host} - ${conn.connection.port}`);
+    const conn = await mongoose.connect(uri); // ya no hace falta useNewUrlParser ni useUnifiedTopology
+    console.log(`✅ Database connected: ${conn.connection.name} on ${conn.connection.host}`);
   } catch (error) {
     console.error('❌ Error connecting to database:', error);
   }
 };
 
 export default connection;
+
 
 /*import mongoose from 'mongoose'
 
