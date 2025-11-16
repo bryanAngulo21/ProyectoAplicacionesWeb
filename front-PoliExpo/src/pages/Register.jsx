@@ -128,7 +128,7 @@ export const Register = () => {
                         {/* Botón Register */}
                         <div className="mb-3">
                             <button 
-                                type="submit"  // <--- IMPORTANTE: cambiar button por submit
+                                type="submit"  
                                 className="bg-orange-700 text-white border py-3 w-full rounded-xl mt-5 hover:scale-105 duration-300 hover:bg-gray-900 font-medium"
                             >
                                 Registrarse

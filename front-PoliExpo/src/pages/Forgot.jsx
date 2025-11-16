@@ -1,9 +1,21 @@
-import { Link } from 'react-router'
+import {Link} from 'react-router'
+import { useForm } from 'react-hook-form';
+import { useFetch } from '../hooks/useFetch'
+
+import { ToastContainer} from 'react-toastify'
 
 export const Forgot = () => {
+    const fetchDataBackend = useFetch()
+
+    const { register, handleSubmit, formState: { errors } } = useForm()
+
+    const sendMail = async (dataForm) => {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/recuperarpassword`
+        await fetchDataBackend(url, dataForm,'POST')
+    }
     return (
         <div className="min-h-screen flex justify-center items-center relative">
-            
+
             {/* Imagen de fondo */}
             <div 
                 className="absolute inset-0 bg-[url('/public/images/landscape_forgot.jpg')] bg-cover bg-center bg-fixed z-0"
@@ -20,24 +32,23 @@ export const Forgot = () => {
                     <p className="text-gray-600 text-center mb-6 text-sm">
                         Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña
                     </p>
+                 <ToastContainer/>
 
                     {/* Formulario */}
-                    <form>
+                    <form onSubmit={handleSubmit(sendMail)}>
 
                         {/* Campo correo electrónico */}
                         <div className="mb-6">
                             <label className="block text-sm font-semibold mb-2 text-gray-700">Correo electrónico</label>
-                            <input 
-                                type="email" 
-                                placeholder="Ingresa un correo electrónico válido" 
-                                className="block w-full rounded-lg border border-gray-300 py-3 px-4 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                            <input type="email" placeholder="Ingresa un correo electrónico válido" className="block w-full rounded-md border border-gray-300 py-1 px-1.5 text-gray-500"
+                            {...register("email", { required: "El correo electrónico es obligatorio" })}
                             />
+                            {errors.email && <p className="text-red-800">{errors.email.message}</p>}
                         </div>
 
                         {/* Botón Enviar correo */}
                         <div className="mb-6">
                             <button 
-                                type="button"
                                 className="bg-gray-700 text-white py-3 w-full rounded-xl hover:bg-gray-900 duration-300 font-medium transition-all hover:scale-105"
                             >
                                 Enviar correo de recuperación
