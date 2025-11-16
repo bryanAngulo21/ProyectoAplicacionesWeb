@@ -158,6 +158,19 @@ const perfil =(req,res)=>{
 }
 
 
+const prueba = async (req,res)=>{
+
+    try {
+        console.log("prueba1")
+        res.status(200).json({msg:"arriba estudiantes"})
+
+        
+    } catch (error) {
+        res.status(500).json({ msg: `error estudiantes - ${error}` })
+    }
+
+}
+
 export {
     registro,
     confirmarMail,
@@ -165,5 +178,6 @@ export {
     comprobarTokenPasword,
     crearNuevoPassword,
     login,
-    perfil
+    perfil,
+    prueba
 }
