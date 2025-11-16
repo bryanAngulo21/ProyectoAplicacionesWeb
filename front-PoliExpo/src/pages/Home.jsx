@@ -22,14 +22,29 @@ import { FaRegThumbsUp } from "react-icons/fa6";
 import { SiQuicklook } from "react-icons/si";
 import { MdGroups2 } from "react-icons/md";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 
 import { FaPhone } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 
+//api
+import { fetchQuote } from "../api/zenQuotes"; // Ajusta la ruta según tu estructura
+
 export const Home = () => {
 const [open, setOpen] = useState(false);
+
+ // Estado para la cita del día
+    const [quote, setQuote] = useState({ q: "", a: "" });
+
+    // useEffect para obtener la cita
+    useEffect(() => {
+        const getQuote = async () => {
+            const data = await fetchQuote();
+            setQuote(data);
+        };
+        getQuote();
+    }, []);
 
     return (
         <>
@@ -135,6 +150,13 @@ const [open, setOpen] = useState(false);
                 </div>
             
             </section>
+
+            <section className='container mx-auto px-4 py-6 text-center bg-white rounded-lg shadow-md my-6'>
+                <h3 className='text-xl font-semibold text-red-800 mb-2'>Cita del día</h3>
+                <p className='text-lg italic'>"{quote.q}"</p>
+                <p className='text-md font-bold mt-1'>- {quote.a}</p>
+            </section>
+
 
 
             <section className='container mx-auto px-4'>

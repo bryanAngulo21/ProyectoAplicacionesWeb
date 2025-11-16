@@ -1,9 +1,13 @@
 import { Link, Outlet, useLocation } from 'react-router'
-
+//cierre de sesion 
+import storeAuth from '../context/storeAuth'
 
 const Dashboard = () => {
     const location = useLocation()
     const urlActual = location.pathname
+//cierre de sesion 
+
+    const { clearToken } = storeAuth()
 
 
     return (
@@ -38,35 +42,49 @@ const Dashboard = () => {
                     {/* Enlaces a Dashboard*/}
                     <li className="text-center">
                         <Link to='/dashboard' 
-                        className={`${urlActual === '/dashboard' ? 'text-slate-200 bg-gray-900 px-3 py-2 rounded-md text-center' : 'text-slate-600'} text-xl block mt-2 hover:text-slate-600`}>Dashboard</Link>
+                        className={`${urlActual === '/dashboard' ? 'text-slate-200 bg-gray-900 px-3 py-2 rounded-md text-center' : 'text-slate-600'} text-xl block mt-2 hover:text-slate-600`}>
+                            Dashboard</Link>
                     </li>
 
+                    
 
                     {/* Enlaces a Perfil*/}
                     <li className="text-center">
                         <Link to='/dashboard/profile' 
-                        className={`${urlActual === '/dashboard/profile' ? 'text-slate-200 bg-gray-900 px-3 py-2 rounded-md text-center' : 'text-slate-600'} text-xl block mt-2 hover:text-slate-600`}>Perfil</Link>
+                        className={`${urlActual === '/dashboard/profile' ? 'text-slate-200 bg-gray-900 px-3 py-2 rounded-md text-center' : 'text-slate-600'} text-xl block mt-2 hover:text-slate-600`}>
+                            Perfil</Link>
                     </li>
+
+                    {/* Enlaces a Api reconociemonto facial*/}
+                    <li className="text-center">
+                        <Link to='/dashboard/facerecognition' 
+                        className={`${urlActual === '/dashboard/facerecognition' ? 'text-slate-200 bg-gray-900 px-3 py-2 rounded-md text-center' : 'text-slate-600'} text-xl block mt-2 hover:text-slate-600`}>
+                            Reconocimiento facial </Link>
+                    </li>
+
 
 
                     {/* Enlaces a Listar */}
                     <li className="text-center">
                         <Link to='/dashboard/list' 
-                        className={`${urlActual === '/dashboard/list' ? 'text-slate-200 bg-gray-900 px-3 py-2 rounded-md text-center' : 'text-slate-600'} text-xl block mt-2 hover:text-slate-600`}>Listar</Link>
+                        className={`${urlActual === '/dashboard/list' ? 'text-slate-200 bg-gray-900 px-3 py-2 rounded-md text-center' : 'text-slate-600'} text-xl block mt-2 hover:text-slate-600`}>
+                            Lista de Publicaciones </Link>
                     </li>
 
 
                     {/* Enlaces a Crear */}
                     <li className="text-center">
                         <Link to='/dashboard/create' 
-                        className={`${urlActual === '/dashboard/create' ? 'text-slate-100 bg-gray-900 px-3 py-2 rounded-md text-center' : 'text-slate-600'} text-xl block mt-2 hover:text-slate-600`}>Crear</Link>
+                        className={`${urlActual === '/dashboard/create' ? 'text-slate-100 bg-gray-900 px-3 py-2 rounded-md text-center' : 'text-slate-600'} text-xl block mt-2 hover:text-slate-600`}>
+                            Publicar </Link>
                     </li>
 
 
                     {/* Enlaces a Chat */}
                     <li className="text-center">
                         <Link to='/dashboard/chat' 
-                        className={`${urlActual === '/dashboard/chat' ? 'text-slate-100 bg-gray-900 px-3 py-2 rounded-md text-center' : 'text-slate-600'} text-xl block mt-2 hover:text-slate-600`}>Chat</Link>
+                        className={`${urlActual === '/dashboard/chat' ? 'text-slate-100 bg-gray-900 px-3 py-2 rounded-md text-center' : 'text-slate-600'} text-xl block mt-2 hover:text-slate-600`}>
+                            Contactar con otros usuarios</Link>
                     </li>
                 </ul>
 
@@ -90,10 +108,10 @@ const Dashboard = () => {
                     </div>
                 
 
-                    {/* Botón salir */}
+                   {/* Botón salir */}
                     <div>
                         <Link to='/' className=" text-white mr-3 text-md block hover:bg-red-900 text-center
-                        bg-red-800 px-4 py-1 rounded-lg">Salir</Link>
+                        bg-red-800 px-4 py-1 rounded-lg" onClick={() => clearToken()}  >Salir</Link>
                     </div>
                 
                 </div>
@@ -115,6 +133,7 @@ const Dashboard = () => {
 
 
         </div>
+        
     )
 }
 

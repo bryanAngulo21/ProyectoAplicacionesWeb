@@ -2,6 +2,8 @@
 import Estudiante from "../models/Estudiante.js"
 import { sendMailToRecoveryPassword, sendMailToRegister } from "../helpers/sendMail.js"
 
+//Prtoteccion de rutas
+import { crearTokenJWT } from "../middlewares/JWT.js"
 
 const registro = async (req,res)=>{
 
@@ -120,17 +122,20 @@ const login = async(req,res)=>{
         if(!estudianteBDD) return res.status(404).json({msg:"El usuario no se encuentra registrado"})
         if(!estudianteBDD.confirmEmail) return res.status(403).json({msg:"Debes verificar tu cuenta antes de iniciar sesión"})
         const verificarPassword = await estudianteBDD.matchPassword(password)
-        if(!verificarPassword) return res.status(401).json({msg:"El password no es correcto"})
+         if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password no es el correcto"})
 
         //Paso 3
         //aplico desestructuracion 
-        const {nombre,apellido,direccion,telefono,_id,rol} = estudianteBDD
+        const {nombre,apellido,direccion,telefono,_id} = estudianteBDD
         //const {nombre,apellido,direccion,telefono,_id,rol,correo} = estudianteBDD
+        const token = crearTokenJWT(estudianteBDD._id,estudianteBDD.rol)
+
         //Paso 4 
 
         //solo mando la informacion que se requiere 
         res.status(200).json({
-            rol,
+            //rol,
+            token,
             nombre,
             apellido,
             direccion,
@@ -147,6 +152,10 @@ const login = async(req,res)=>{
     }
 }
 
+const perfil =(req,res)=>{
+	const {token,confirmEmail,createdAt,updatedAt,__v,...datosPerfil} = req.estudianteHeader 
+    res.status(200).json(datosPerfil)
+}
 
 
 export {
@@ -155,5 +164,6 @@ export {
     recuperarPassword,
     comprobarTokenPasword,
     crearNuevoPassword,
-    login
+    login,
+    perfil
 }
