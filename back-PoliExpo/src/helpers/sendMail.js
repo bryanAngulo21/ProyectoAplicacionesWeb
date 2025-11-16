@@ -5,13 +5,11 @@ const sendMailToRegister = (userMail, token) => {
 
     return sendMail(
         userMail,
-        "Bienvenido a PoliExpo",
+        "Bienvenido a PoliExpo ",
         `
             <h1>Confirma tu cuenta</h1>
             <p>Hola, haz clic en el siguiente enlace para confirmar tu cuenta:</p>
             <a href="${process.env.URL_FRONTEND}confirm/${token}">
-            <a href="${process.env.URL_BACKEND}confirmar/${token}">
-            
             Confirmar cuenta
             </a>
             <hr>
@@ -32,9 +30,9 @@ const sendMailToRecoveryPassword = (userMail, token) => {
             <h1>PoliExpo</h1>
             <p>Has solicitado restablecer tu contraseña.</p>
              <a href="${process.env.URL_FRONTEND}reset/${token}">
-             <a href="${process.env.URL_BACKEND}recuperarpassword/${token}">
-            Clic para restablecer tu contraseña
+             Clic para restablecer tu contraseña
             </a>
+             
             <hr>
             <footer>El equipo de PoliExpo te da la más cordial bienvenida.</footer>
         `
