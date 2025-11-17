@@ -6,8 +6,8 @@ const sendMailToRegister = (userMail, token) => {
     "Bienvenido a PoliExpo",
     `
       <h1>Confirma tu cuenta ahora</h1>
-      <p>Hola, haz clic en el siguiente enlace para confirmar tu cuenta:</p>
-      <a href="${process.env.URL_FRONTEND}confirm/${token}">
+      <p>Haz clic en el siguiente enlace para confirmar tu cuenta:</p>
+      <a href="${process.env.URL_FRONTEND}/confirm/${token}">
         Confirmar cuenta
       </a>
       <hr>
@@ -23,7 +23,7 @@ const sendMailToRecoveryPassword = (userMail, token) => {
     `
       <h1>PoliExpo</h1>
       <p>Has solicitado restablecer tu contraseña.</p>
-      <a href="${process.env.URL_FRONTEND}reset/${token}">
+      <a href="${process.env.URL_FRONTEND}/reset/${token}">
         Clic para restablecer tu contraseña
       </a>
       <hr>
@@ -33,6 +33,7 @@ const sendMailToRecoveryPassword = (userMail, token) => {
 };
 
 export { sendMailToRegister, sendMailToRecoveryPassword };
+
 
 /*import sendMail from "../config/nodemailer.js"
 

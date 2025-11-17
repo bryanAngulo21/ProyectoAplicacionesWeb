@@ -29,7 +29,7 @@ const registro = async (req,res)=>{
 
 }
 
-
+/*
 const confirmarMail = async (req, res) => {
     try {
         const { token } = req.params
@@ -44,7 +44,32 @@ const confirmarMail = async (req, res) => {
     console.error(error)
         res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }
-}
+}*/
+
+const confirmarMail = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const estudianteBDD = await Estudiante.findOne({ token });
+
+    if (!estudianteBDD) {
+      // Redirigir con mensaje de error al frontend
+      return res.redirect(`${process.env.URL_FRONTEND}/confirmado?status=error`);
+    }
+
+    estudianteBDD.token = null;
+    estudianteBDD.confirmEmail = true;
+    await estudianteBDD.save();
+
+    // Redirigir al frontend con mensaje de éxito
+    res.redirect(`${process.env.URL_FRONTEND}/confirmado?status=success`);
+  } catch (error) {
+    console.error(error);
+    res.redirect(`${process.env.URL_FRONTEND}/confirmado?status=error`);
+  }
+};
+
+
+
 
 const recuperarPassword = async (req, res) => {
 
