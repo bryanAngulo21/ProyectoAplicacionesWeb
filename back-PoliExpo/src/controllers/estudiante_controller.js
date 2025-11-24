@@ -4,6 +4,9 @@ import { sendMailToRecoveryPassword, sendMailToRegister } from "../helpers/sendM
 
 //Prtoteccion de rutas
 import { crearTokenJWT } from "../middlewares/JWT.js"
+//actualizar perfil
+import mongoose from "mongoose"
+
 
 const registro = async (req,res)=>{
 
@@ -183,18 +186,53 @@ const perfil =(req,res)=>{
 }
 
 
-const prueba = async (req,res)=>{
+const actualizarPerfil = async (req,res)=>{
 
     try {
-        console.log("prueba1")
-        res.status(200).json({msg:"arriba estudiantes"})
-
+        const {id} = req.params
+        const {nombre,apellido,direccion,celular,email} = req.body
+        if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(400).json({msg:`ID inválido: ${id}`})
+        const estudianteBDD = await Estudiante.findById(id)
+        if(!estudianteBDD) return res.status(404).json({ msg: `No existe el estudiante con ID ${id}` })
+        if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Debes llenar todos los campos"})
+        if (estudianteBDD.email !== email)
+        {
+            const emailExistente  = await Estudiante.findOne({email})
+            if (emailExistente )
+            {
+                return res.status(404).json({msg:`El email ya se encuentra registrado`})  
+            }
+        }
+        estudianteBDD.nombre = nombre ?? estudianteBDD.nombre
+        estudianteBDD.apellido = apellido ?? estudianteBDD.apellido
+        estudianteBDD.direccion = direccion ?? estudianteBDD.direccion
+        estudianteBDD.celular = celular ?? estudianteBDD.celular
+        estudianteBDD.email = email ?? estudianteBDD.email
+        await estudianteBDD.save()
+        res.status(200).json(estudianteBDD)
         
     } catch (error) {
-        res.status(500).json({ msg: `error estudiantes - ${error}` })
+        console.error(error)
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }
-
 }
+
+const actualizarPassword = async (req,res)=>{
+    try {
+        const estudianteBDD = await Estudiante.findById(req.estudianteHeader._id)
+        if(!estudianteBDD) return res.status(404).json({msg:`Lo sentimos, no existe el estudiante ${id}`})
+        const verificarPassword = await estudianteBDD.matchPassword(req.body.passwordactual)
+        if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password actual no es el correcto"})
+        estudianteBDD.password = await estudianteBDD.encryptPassword(req.body.passwordnuevo)
+        await estudianteBDD.save()
+
+    res.status(200).json({msg:"Password actualizado correctamente"})
+    } catch (error) {
+        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
+    }
+}
+
+
 
 export {
     registro,
@@ -204,5 +242,7 @@ export {
     crearNuevoPassword,
     login,
     perfil,
-    prueba
+    actualizarPerfil,
+    actualizarPassword
+    
 }
