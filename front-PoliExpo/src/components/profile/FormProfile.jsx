@@ -5,12 +5,12 @@ import { ToastContainer } from 'react-toastify'
 
 const FormularioPerfil = () => {
 
-    const { user,updateProfile } = storeProfile()
+    const { user, updateProfile } = storeProfile()
     const { register, handleSubmit, reset, formState: { errors } } = useForm()
 
     const updateUser = (dataForm) => {
         const url = `${import.meta.env.VITE_BACKEND_URL}/actualizarperfil/${user._id}`
-        updateProfile(url,dataForm)
+        updateProfile(url, dataForm)
     }
 
     useEffect(() => {
@@ -25,74 +25,130 @@ const FormularioPerfil = () => {
         }
     }, [user])
 
-    return (
+    const inputStyle = `
+        w-full rounded-xl border border-gray-300 px-3 py-2 
+        text-gray-700 shadow-sm
+        focus:outline-none focus:ring-2 focus:ring-gray-400 
+        transition-all duration-200
+    `
 
+    return (
         <form onSubmit={handleSubmit(updateUser)}>
 
-            <ToastContainer/>
-
-            {/* Campo Nombre */}
-            <div>
-                <label className="mb-2 block text-sm font-semibold">Nombre</label>
-                <input type="text" placeholder="Ingresa tu nombre" className="block w-full 
-                rounded-md border border-gray-300 py-1 px-2 text-gray-500 mb-5"
-                {...register("nombre", { required: "El nombre es obligatorio" })}
-                />
-                {errors.nombre && <p className="text-red-800">{errors.nombre.message}</p>}
-            </div>
-        
-        
-            {/* Campo Apellido */}
-            <div>
-                <label className="mb-2 block text-sm font-semibold">Apellido</label>
-                <input type="text" placeholder="Ingresa tu apellido" className="block w-full 
-                rounded-md border border-gray-300 py-1 px-2 text-gray-500 mb-5"
-                {...register("apellido", { required: "El apellido es obligatorio" })}
-                />
-                {errors.apellido && <p className="text-red-800">{errors.apellido.message}</p>}
-            </div>
-        
-        
-            {/* Campo Dirección */}
-            <div>
-                <label className="mb-2 block text-sm font-semibold">Dirección</label>
-                <input type="text" placeholder="Ingresa tu dirección" className="block w-full 
-                rounded-md border border-gray-300 py-1 px-2 text-gray-500 mb-5"
-                {...register("direccion", { required: "La dirección es obligatoria" })}
-                />
-                {errors.direccion && <p className="text-red-800">{errors.direccion.message}</p>}
-            </div>
-        
-        
-            {/* Campo Celular */}
-            <div>
-                <label className="mb-2 block text-sm font-semibold">Celular</label>
-                <input type="text" inputMode="tel" placeholder="Ingresa tu teléfono" className="block w-full 
-                rounded-md border border-gray-300 py-1 px-2 text-gray-500 mb-5"
-                {...register("celular", { required: "El celular es obligatorio" })}
-                />
-                {errors.celular && <p className="text-red-800">{errors.celular.message}</p>}
-            </div>
-        
-        
-            {/* Campo Correo Electrónico */}
-            <div>
-                <label className="mb-2 block text-sm font-semibold">Correo electrónico</label>
-                <input type="email" placeholder="Ingresa tu correo" className="block w-full 
-                rounded-md border border-gray-300 py-1 px-2 text-gray-500 mb-5"
-                {...register("email", { required: "El correo es obligatorio" })}
-                />
-                {errors.email && <p className="text-red-800">{errors.email.message}</p>}
+            <div className="mt-5">
+                <h1 className="font-black text-3xl text-gray-700 mt-16 tracking-tight">
+                    Actualizar perfil
+                </h1>
+                <hr className="my-4 border-gray-300" />
             </div>
 
+            <ToastContainer />
 
-            {/* Botón para actualizar el perfil */}
-            <input
+            {/* Nombre */}
+            <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-600 mb-1">
+                    Nombre
+                </label>
+                <input
+                    type="text"
+                    placeholder="Ingresa tu nombre"
+                    className={inputStyle}
+                    {...register("nombre", { required: "El nombre es obligatorio" })}
+                />
+                {errors.nombre && (
+                    <p className="text-red-600 text-sm mt-1">{errors.nombre.message}</p>
+                )}
+            </div>
+
+            {/* Apellido */}
+            <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-600 mb-1">
+                    Apellido
+                </label>
+                <input
+                    type="text"
+                    placeholder="Ingresa tu apellido"
+                    className={inputStyle}
+                    {...register("apellido", { required: "El apellido es obligatorio" })}
+                />
+                {errors.apellido && (
+                    <p className="text-red-600 text-sm mt-1">{errors.apellido.message}</p>
+                )}
+            </div>
+
+            {/* Dirección */}
+            <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-600 mb-1">
+                    Dirección
+                </label>
+                <input
+                    type="text"
+                    placeholder="Ingresa tu dirección"
+                    className={inputStyle}
+                    {...register("direccion", { required: "La dirección es obligatoria" })}
+                />
+                {errors.direccion && (
+                    <p className="text-red-600 text-sm mt-1">{errors.direccion.message}</p>
+                )}
+            </div>
+
+            {/* Celular */}
+            <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-600 mb-1">
+                    Celular
+                </label>
+                <input
+                    type="text"
+                    inputMode="tel"
+                    placeholder="Ingresa tu teléfono"
+                    className={inputStyle}
+                    {...register("celular", { 
+                        required: "El celular es obligatorio",
+                        pattern: {
+                            value: /^\d{10}$/,
+                            message: "Ingresa un número de 10 dígitos"
+                        }
+                    })}
+                />
+                {errors.celular && (
+                    <p className="text-red-600 text-sm mt-1">{errors.celular.message}</p>
+                )}
+            </div>
+
+            {/* Correo */}
+            <div className="mb-6">
+                    <label className="block text-sm font-semibold text-gray-600 mb-1">
+                        Correo electrónico
+                    </label>
+                    <input
+                        type="email"
+                        placeholder="Ingresa tu correo"
+                        className={inputStyle}
+                        {...register("email", { 
+                            required: "El correo es obligatorio",
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: "Ingresa un correo válido"
+                            }
+                        })}
+                    />
+                    {errors.email && (
+                        <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
+                    )}
+                </div>
+
+            {/* Botón */}
+            <button
                 type="submit"
-                className='bg-gray-800 w-full p-2 mt-5 text-slate-300 uppercase 
-                font-bold rounded-lg hover:bg-gray-600 cursor-pointer transition-all'
-                value='Actualizar'
-            />
+                className="
+                    w-full bg-gray-800 text-slate-200 font-bold uppercase
+                    py-3 rounded-xl shadow-md mt-3
+                    hover:bg-gray-700 transition-all duration-200
+                    active:scale-[0.98]
+                "
+            >
+                Actualizar
+            </button>
 
         </form>
     )
