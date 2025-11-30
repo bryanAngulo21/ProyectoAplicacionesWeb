@@ -5,6 +5,9 @@ import { useForm } from "react-hook-form"
 import { ToastContainer } from "react-toastify"
 import { useFetch } from "../hooks/useFetch"
 import { getRandomImage } from "../api/imagenFondo"
+import logoPoliExpo from '../assets/logo-PoliExpo3.png'
+
+
 
 export const Register = () => {
 
@@ -37,7 +40,7 @@ export const Register = () => {
 
             {/* Fondo principal */}
             <div
-                className="absolute inset-0 bg-[url('/images/landscape_register.jpg')] bg-cover bg-center opacity-50"
+                className="absolute inset-0 bg-[url('/images/landscape_register.jpg')] bg-cover bg-center opacity-40"
             ></div>
 
             {/* Contenedor general */}
@@ -46,9 +49,13 @@ export const Register = () => {
                 {/* FORMULARIO */}
                 <div className="w-full md:w-1/2 bg-white p-8">
 
-                    <h1 className="text-3xl font-semibold mb-2 text-center text-red-700">
-                        Bienvenido
-                    </h1>
+                    <div className="flex flex-col items-center justify-center gap-4">
+                        <img src={logoPoliExpo} alt="logo" className="w-20 h-20" />
+                        <h1 className="text-3xl font-semibold text-red-600 text-center">
+                            Crea un cuenta en PoliExpo
+                        </h1>
+                    </div>
+                    
 
                     <small className="block my-3 text-sm text-center text-gray-900">
                         Por favor ingresa tus datos
@@ -65,10 +72,14 @@ export const Register = () => {
                                 <input
                                     type="text"
                                     placeholder="Ingresa tu nombre"
-                                    className="block w-full rounded-md border border-black py-2 px-3 text-gray-900 focus:ring-2 focus:ring-red-600"
+                                    className="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition-all duration-300"
                                     {...register("nombre", { required: "El nombre es obligatorio" })}
                                 />
-                                {errors.nombre && <p className="text-red-600">{errors.nombre.message}</p>}
+                                {errors.nombre && (
+                                    <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                                         {errors.nombre.message}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -76,10 +87,14 @@ export const Register = () => {
                                 <input
                                     type="text"
                                     placeholder="Ingresa tu apellido"
-                                    className="block w-full rounded-md border border-black py-2 px-3 text-gray-900 focus:ring-2 focus:ring-red-600"
+                                    className="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition-all duration-300"
                                     {...register("apellido", { required: "El apellido es obligatorio" })}
                                 />
-                                {errors.apellido && <p className="text-red-600">{errors.apellido.message}</p>}
+                                {errors.apellido && (
+                                    <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                                         {errors.apellido.message}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -89,10 +104,14 @@ export const Register = () => {
                             <input
                                 type="text"
                                 placeholder="Ingresa tu dirección de domicilio"
-                                className="block w-full rounded-md border border-black py-2 px-3 text-gray-900 focus:ring-2 focus:ring-red-600"
+                                className="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition-all duration-300"
                                 {...register("direccion", { required: "La dirección es obligatoria" })}
                             />
-                            {errors.direccion && <p className="text-red-600">{errors.direccion.message}</p>}
+                            {errors.direccion && (
+                                <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                                     {errors.direccion.message}
+                                </p>
+                            )}
                         </div>
 
                         {/* Celular y Email */}
@@ -103,10 +122,14 @@ export const Register = () => {
                                     type="text"
                                     inputMode="tel"
                                     placeholder="Ingresa tu celular"
-                                    className="block w-full rounded-md border border-black py-2 px-3 text-gray-900 focus:ring-2 focus:ring-red-600"
+                                    className="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition-all duration-300"
                                     {...register("celular", { required: "El celular es obligatorio" })}
                                 />
-                                {errors.celular && <p className="text-red-600">{errors.celular.message}</p>}
+                                {errors.celular && (
+                                    <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                                         {errors.celular.message}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -114,10 +137,14 @@ export const Register = () => {
                                 <input
                                     type="email"
                                     placeholder="Ingresa tu correo electrónico"
-                                    className="block w-full rounded-md border border-black py-2 px-3 text-gray-900 focus:ring-2 focus:ring-red-600"
+                                    className="block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition-all duration-300"
                                     {...register("email", { required: "El correo es obligatorio" })}
                                 />
-                                {errors.email && <p className="text-red-600">{errors.email.message}</p>}
+                                {errors.email && (
+                                    <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                                         {errors.email.message}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -129,16 +156,20 @@ export const Register = () => {
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     placeholder="************"
-                                    className="w-full rounded-md border border-black py-2 px-3 pr-10 text-gray-900 focus:ring-2 focus:ring-red-600"
+                                    className="w-full rounded-lg border border-gray-300 py-2 px-3 pr-10 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition-all duration-300"
                                     {...register("password", { required: "La contraseña es obligatoria" })}
                                 />
 
-                                {errors.password && <p className="text-red-600">{errors.password.message}</p>}
+                                {errors.password && (
+                                    <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                                        {errors.password.message}
+                                    </p>
+                                )}
 
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute inset-y-0 right-3 flex items-center text-gray-600 hover:text-red-700"
+                                    className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-red-500 transition-colors duration-200"
                                 >
                                     {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
                                 </button>
@@ -148,7 +179,7 @@ export const Register = () => {
                         {/* Botón */}
                         <button
                             type="submit"
-                            className="bg-red-700 text-white py-3 w-full rounded-xl mt-5 hover:bg-black duration-300 hover:scale-105"
+                            className="bg-red-700 text-white py-3 w-full rounded-xl mt-5 hover:bg-black duration-300 hover:scale-105 transition-all"
                         >
                             Registrarse
                         </button>
@@ -159,7 +190,7 @@ export const Register = () => {
                         <p className="text-gray-900">¿Ya tienes una cuenta?</p>
                         <Link
                             to="/login"
-                            className="py-2 px-5 bg-black text-white rounded-xl hover:bg-red-700 duration-300 hover:scale-110"
+                            className="py-2 px-5 bg-black text-white rounded-xl hover:bg-red-700 duration-300 hover:scale-110 transition-all"
                         >
                             Iniciar sesión
                         </Link>
@@ -167,36 +198,35 @@ export const Register = () => {
                 </div>
 
                 {/* PANEL DE IMAGEN */}
-            <div className="w-full md:w-1/2 relative">
-            {backgroundImage && (
-                <>
-                {/* Fondo desenfocado y ampliado para "rellenar" bordes */}
-                <div
-                    aria-hidden="true"
-                    className={`absolute inset-0 transition-opacity duration-1000 ${loaded ? "opacity-100" : "opacity-0"}`}
-                    style={{
-                    backgroundImage: `url(${backgroundImage})`,
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",         // llena todo el contenedor
-                    filter: "blur(12px) brightness(0.55)",
-                    transform: "scale(1.05)",        // un ligero zoom para que no se vean bordes tras el blur
-                    }}
-                />
+                <div className="w-full md:w-1/2 relative">
+                    {backgroundImage && (
+                        <>
+                            {/* Fondo desenfocado y ampliado para "rellenar" bordes */}
+                            <div
+                                aria-hidden="true"
+                                className={`absolute inset-0 transition-opacity duration-1000 ${loaded ? "opacity-100" : "opacity-0"}`}
+                                style={{
+                                    backgroundImage: `url(${backgroundImage})`,
+                                    backgroundPosition: "center",
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundSize: "cover",
+                                    filter: "blur(12px) brightness(0.55)",
+                                    transform: "scale(1.05)",
+                                }}
+                            />
 
-                {/* Imagen principal, centrada y sin recortarse */}
-                <div className="relative w-full h-96 md:h-full flex items-center justify-center">
-                    <img
-                    src={backgroundImage}
-                    alt="Inspiracional"
-                    onLoad={() => setLoaded(true)}
-                    className={`max-w-full max-h-full object-contain transition-opacity duration-1000 ${loaded ? "opacity-100" : "opacity-0"}`}
-                    />
+                            {/* Imagen principal, centrada y sin recortarse */}
+                            <div className="relative w-full h-96 md:h-full flex items-center justify-center">
+                                <img
+                                    src={backgroundImage}
+                                    alt="Inspiracional"
+                                    onLoad={() => setLoaded(true)}
+                                    className={`max-w-full max-h-full object-contain transition-opacity duration-1000 ${loaded ? "opacity-100" : "opacity-0"}`}
+                                />
+                            </div>
+                        </>
+                    )}
                 </div>
-                </>
-            )}
-            </div>
-
 
             </div>
         </div>

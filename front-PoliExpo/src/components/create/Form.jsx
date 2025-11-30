@@ -175,7 +175,7 @@ export const Form = () => {
                             defaultValue=""
                         >
                             <option value="">--- Seleccionar ---</option>
-                            <option value="gato">Academico</option>
+                            <option value="gato">Académico</option>
                             <option value="perro">Extracurricular</option>
                             <option value="otro">Otro</option>
                         </select>
