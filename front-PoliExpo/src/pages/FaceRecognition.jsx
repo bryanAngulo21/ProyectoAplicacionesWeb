@@ -116,7 +116,7 @@ function FacerRecognition() {
   return (
     <div className="facer-container">
       <div className="app">
-        <h1>Reconocimiento Facial con SkyBiometry</h1>
+        <h1>Editar con Reconocimiento Facial </h1>
 
         <div className="video-container">
           <video ref={videoRef} autoPlay style={{ display: imageSrc ? "none" : "block" }} />
