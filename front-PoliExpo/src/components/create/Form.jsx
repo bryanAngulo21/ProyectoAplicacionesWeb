@@ -4,7 +4,7 @@ import { useState } from "react"
 export const Form = () => {
 
     const [stateAvatar, setStateAvatar] = useState({
-        generatedImage: "https://cdn-icons-png.flaticon.com/512/2138/2138440.png",
+        generatedImage: "https://cdn-icons-png.flaticon.com/128/5956/5956597.png",
         prompt: "",
         loading: false
     })
@@ -18,11 +18,11 @@ export const Form = () => {
         <form>
             
 
-            {/* Información del propietario */}
+            {/* Información del autor */}
             <fieldset className="border-2 border-gray-500 p-6 rounded-lg shadow-lg">
 
                 <legend className="text-xl font-bold text-gray-700 bg-gray-200 px-4 py-1 rounded-md">
-                    Información del desarrollador
+                    Información del autor
                 </legend>
 
                 {/* Cédula */}
@@ -81,16 +81,16 @@ export const Form = () => {
 
 
 
-            {/* Información del paciente */}
+            {/* Información del proyecto*/}
 
             <fieldset className="border-2 border-gray-500 p-6 rounded-lg shadow-lg mt-10">
 
                 <legend className="text-xl font-bold text-gray-700 bg-gray-200 px-4 py-1 rounded-md">
-                    Información de la mascota
+                    Información del proyecto
                 </legend>
 
 
-                {/* Campo nombre de la mascota */}
+                {/* Campo nombre del proyecto */}
                 <div>
                     <label className="mb-2 block text-sm font-semibold">Nombre</label>
                     <input
@@ -101,8 +101,8 @@ export const Form = () => {
                 </div>
 
 
-                {/* Campo imagen de la mascota*/}
-                <label className="mb-2 block text-sm font-semibold">Imagen de la mascota</label>
+                {/* Campo imagen del proyecto*/}
+                <label className="mb-2 block text-sm font-semibold">Imagen del proyecto</label>
                 
                 <div className="flex gap-4 mb-2">
                     {/* Opción: Imagen con IA */}
@@ -175,16 +175,16 @@ export const Form = () => {
                             defaultValue=""
                         >
                             <option value="">--- Seleccionar ---</option>
-                            <option value="gato">Gato</option>
-                            <option value="perro">Perro</option>
+                            <option value="gato">Academico</option>
+                            <option value="perro">Extracurricular</option>
                             <option value="otro">Otro</option>
                         </select>
                     </div>
 
 
-                    {/* Campo fecha de nacimiento */}
+                    {/* Campo fecha de creaciopn */}
                     <div>
-                        <label htmlFor="fechaNacimiento" className="mb-2 block text-sm font-semibold">Fecha de nacimiento</label>
+                        <label htmlFor="fechaNacimiento" className="mb-2 block text-sm font-semibold">Fecha de creación</label>
                         <input
                             id="fechaNacimiento"
                             type="date"

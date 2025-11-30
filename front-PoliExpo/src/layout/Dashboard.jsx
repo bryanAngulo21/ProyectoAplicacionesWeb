@@ -83,6 +83,9 @@ const Dashboard = () => {
                         </Link>
                     </li>
 
+                    
+
+                    
                     <li>
                         <Link 
                             to='/dashboard/facerecognition'
@@ -92,7 +95,8 @@ const Dashboard = () => {
                                 : 'text-gray-400 hover:text-white hover:bg-gray-800'}
                             `}
                         >
-                            <MdPublishedWithChanges />
+                            <VscOpenPreview />
+
                             Mis Publicaciones
                         </Link>
                     </li>
@@ -106,8 +110,9 @@ const Dashboard = () => {
                                 : 'text-gray-400 hover:text-white hover:bg-gray-800'}
                             `}
                         >
-                            <VscOpenPreview />
-                            Otras Publicaciones
+                            <MdPublishedWithChanges />
+
+                            Editar Publicaciones
                         </Link>
                     </li>
 
