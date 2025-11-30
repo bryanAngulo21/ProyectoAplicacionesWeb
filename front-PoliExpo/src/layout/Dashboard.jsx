@@ -188,7 +188,7 @@ const Dashboard = () => {
                     {/* Footer */}
                     <div className='bg-black h-12'>
                         <p className='text-center text-white leading-[3rem] font-light'>
-                            PoliEXPO - Todos los derechos reservados
+                            PoliExpo - Todos los derechos reservados
                         </p>
                     </div>
 
