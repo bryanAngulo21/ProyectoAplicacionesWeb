@@ -189,10 +189,11 @@ const perfil =(req,res)=>{
 const actualizarPerfil = async (req,res)=>{
 
     try {
-        const {id} = req.params
+         //Paso 1 obtener datos que recibe el controlador del backend 
+        const{_id}=req.estudianteHeader
         const {nombre,apellido,direccion,celular,email} = req.body
-        if( !mongoose.Types.ObjectId.isValid(id) ) return res.status(400).json({msg:`ID inválido: ${id}`})
-        const estudianteBDD = await Estudiante.findById(id)
+
+        const estudianteBDD = await Estudiante.findById(_id)
         if(!estudianteBDD) return res.status(404).json({ msg: `No existe el estudiante con ID ${id}` })
         if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Debes llenar todos los campos"})
         if (estudianteBDD.email !== email)
@@ -219,14 +220,24 @@ const actualizarPerfil = async (req,res)=>{
 
 const actualizarPassword = async (req,res)=>{
     try {
-        const estudianteBDD = await Estudiante.findById(req.estudianteHeader._id)
+       
+    //Paso 1 obtener datos que recibe el controlador del backend 
+        const{passwordactual, passwordnuevo}=req.body
+        const{_id}=req.estudianteHeader
+        //Paso2
+        const estudianteBDD = await Estudiante.findById(_id)
         if(!estudianteBDD) return res.status(404).json({msg:`Lo sentimos, no existe el estudiante ${id}`})
-        const verificarPassword = await estudianteBDD.matchPassword(req.body.passwordactual)
-        if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password actual no es el correcto"})
-        estudianteBDD.password = await estudianteBDD.encryptPassword(req.body.passwordnuevo)
-        await estudianteBDD.save()
 
-    res.status(200).json({msg:"Password actualizado correctamente"})
+        const verificarPassword = await estudianteBDD.matchPassword(passwordactual)
+        if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password actual no es el correcto"})
+        
+        
+        //Paso 3 Logica cuando se ingrese la contrasena se guarda encriptda en la base de datos
+        estudianteBDD.password = await estudianteBDD.encryptPassword(passwordnuevo)
+        //metodo asincrono para guardar
+        await estudianteBDD.save()
+        //Paso 4 mopswtrar respuesta con res.status
+        res.status(200).json({msg:"Password actualizado correctamente"})
     } catch (error) {
         res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }

@@ -9,3 +9,51 @@ body {
 scroll-behavior: smooth;
 }
 
+/* Fade Up (secciones) */
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(25px);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-fadeUp {
+  opacity: 0;
+  animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+
+
+/* Fade In lento (hero, imágenes) */
+@keyframes fadeInSlow {
+  0% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeInSlow {
+  opacity: 0;
+  animation: fadeInSlow 1.4s ease-out forwards;
+}
+
+
+
+/* Hover suave para íconos */
+.icon-soft {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.icon-soft:hover {
+  transform: scale(1.06);
+  opacity: 0.9;
+}

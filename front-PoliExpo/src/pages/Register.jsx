@@ -4,8 +4,7 @@ import { Link } from "react-router"
 import { useForm } from "react-hook-form"
 import { ToastContainer } from "react-toastify"
 import { useFetch } from "../hooks/useFetch"
-import { getRandomImage } from "../api/imagenFondo" // Api de imagen
-
+import { getRandomImage } from "../api/imagenFondo"
 
 export const Register = () => {
 
@@ -18,7 +17,6 @@ export const Register = () => {
         await fetchDataBackend(url, dataForm, "POST")
     }
 
-    // Imagen dinámica API
     const [backgroundImage, setBackgroundImage] = useState(null)
     const [loaded, setLoaded] = useState(false)
 
@@ -34,26 +32,25 @@ export const Register = () => {
         fetchImage()
     }, [])
 
-
     return (
-        <div className="min-h-screen flex justify-center items-center relative">
+        <div className="min-h-screen flex justify-center items-center relative bg-black">
 
-            {/* Fondo fijo */}
+            {/* Fondo principal */}
             <div
-                className="absolute inset-0 bg-[url('/images/landscape_register.jpg')] bg-cover bg-center bg-fixed z-0"
+                className="absolute inset-0 bg-[url('/images/landscape_register.jpg')] bg-cover bg-center opacity-50"
             ></div>
 
-            {/* Contenedor principal lado a lado */}
-            <div className="relative z-20 w-full max-w-5xl mx-4 flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl">
+            {/* Contenedor general */}
+            <div className="relative z-20 w-full max-w-5xl mx-4 flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl ">
 
                 {/* FORMULARIO */}
                 <div className="w-full md:w-1/2 bg-white p-8">
 
-                    <h1 className="text-3xl font-semibold mb-2 text-center text-orange-700">
+                    <h1 className="text-3xl font-semibold mb-2 text-center text-red-700">
                         Bienvenido
                     </h1>
 
-                    <small className="text-black-400 block my-3 text-sm text-center">
+                    <small className="block my-3 text-sm text-center text-gray-900">
                         Por favor ingresa tus datos
                     </small>
 
@@ -63,83 +60,85 @@ export const Register = () => {
 
                         {/* Nombre y Apellido */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="mb-3">
-                                <label className="text-sm font-semibold">Nombre</label>
+                            <div>
+                                <label className="text-sm font-semibold text-gray-900">Nombre</label>
                                 <input
                                     type="text"
                                     placeholder="Ingresa tu nombre"
-                                    className="block w-full rounded-md border border-gray-300 py-2 px-3 text-gray-600 focus:ring-2 focus:ring-blue-500"
+                                    className="block w-full rounded-md border border-black py-2 px-3 text-gray-900 focus:ring-2 focus:ring-red-600"
                                     {...register("nombre", { required: "El nombre es obligatorio" })}
                                 />
-                                {errors.nombre && <p className="text-red-800">{errors.nombre.message}</p>}
+                                {errors.nombre && <p className="text-red-600">{errors.nombre.message}</p>}
                             </div>
 
-                            <div className="mb-3">
-                                <label className="text-sm font-semibold">Apellido</label>
+                            <div>
+                                <label className="text-sm font-semibold text-gray-900">Apellido</label>
                                 <input
                                     type="text"
                                     placeholder="Ingresa tu apellido"
-                                    className="block w-full rounded-md border border-gray-300 py-2 px-3 text-gray-600 focus:ring-2 focus:ring-blue-500"
+                                    className="block w-full rounded-md border border-black py-2 px-3 text-gray-900 focus:ring-2 focus:ring-red-600"
                                     {...register("apellido", { required: "El apellido es obligatorio" })}
                                 />
-                                {errors.apellido && <p className="text-red-800">{errors.apellido.message}</p>}
+                                {errors.apellido && <p className="text-red-600">{errors.apellido.message}</p>}
                             </div>
                         </div>
 
                         {/* Dirección */}
-                        <div className="mb-3">
-                            <label className="text-sm font-semibold">Dirección</label>
+                        <div className="mt-3">
+                            <label className="text-sm font-semibold text-gray-900">Dirección</label>
                             <input
                                 type="text"
                                 placeholder="Ingresa tu dirección de domicilio"
-                                className="block w-full rounded-md border border-gray-300 py-2 px-3 text-gray-600 focus:ring-2 focus:ring-blue-500"
+                                className="block w-full rounded-md border border-black py-2 px-3 text-gray-900 focus:ring-2 focus:ring-red-600"
                                 {...register("direccion", { required: "La dirección es obligatoria" })}
                             />
-                            {errors.direccion && <p className="text-red-800">{errors.direccion.message}</p>}
+                            {errors.direccion && <p className="text-red-600">{errors.direccion.message}</p>}
                         </div>
 
                         {/* Celular y Email */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="mb-3">
-                                <label className="text-sm font-semibold">Celular</label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                            <div>
+                                <label className="text-sm font-semibold text-gray-900">Celular</label>
                                 <input
                                     type="text"
                                     inputMode="tel"
                                     placeholder="Ingresa tu celular"
-                                    className="block w-full rounded-md border border-gray-300 py-2 px-3 text-gray-600 focus:ring-2 focus:ring-blue-500"
+                                    className="block w-full rounded-md border border-black py-2 px-3 text-gray-900 focus:ring-2 focus:ring-red-600"
                                     {...register("celular", { required: "El celular es obligatorio" })}
                                 />
-                                {errors.celular && <p className="text-red-800">{errors.celular.message}</p>}
+                                {errors.celular && <p className="text-red-600">{errors.celular.message}</p>}
                             </div>
 
-                            <div className="mb-3">
-                                <label className="text-sm font-semibold">Correo electrónico</label>
+                            <div>
+                                <label className="text-sm font-semibold text-gray-900">Correo electrónico</label>
                                 <input
                                     type="email"
                                     placeholder="Ingresa tu correo electrónico"
-                                    className="block w-full rounded-md border border-gray-300 py-2 px-3 text-gray-600 focus:ring-2 focus:ring-blue-500"
+                                    className="block w-full rounded-md border border-black py-2 px-3 text-gray-900 focus:ring-2 focus:ring-red-600"
                                     {...register("email", { required: "El correo es obligatorio" })}
                                 />
-                                {errors.email && <p className="text-red-800">{errors.email.message}</p>}
+                                {errors.email && <p className="text-red-600">{errors.email.message}</p>}
                             </div>
                         </div>
 
                         {/* Contraseña */}
-                        <div className="mb-3">
-                            <label className="text-sm font-semibold">Contraseña</label>
+                        <div className="mb-3 mt-3">
+                            <label className="text-sm font-semibold text-gray-900">Contraseña</label>
+
                             <div className="relative">
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     placeholder="************"
-                                    className="w-full rounded-md border border-gray-300 py-2 px-3 pr-10 focus:ring-2 focus:ring-blue-500 text-gray-600"
+                                    className="w-full rounded-md border border-black py-2 px-3 pr-10 text-gray-900 focus:ring-2 focus:ring-red-600"
                                     {...register("password", { required: "La contraseña es obligatoria" })}
                                 />
-                                {errors.password && <p className="text-red-800">{errors.password.message}</p>}
+
+                                {errors.password && <p className="text-red-600">{errors.password.message}</p>}
 
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-800"
+                                    className="absolute inset-y-0 right-3 flex items-center text-gray-600 hover:text-red-700"
                                 >
                                     {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
                                 </button>
@@ -149,7 +148,7 @@ export const Register = () => {
                         {/* Botón */}
                         <button
                             type="submit"
-                            className="bg-orange-700 text-white py-3 w-full rounded-xl mt-5 hover:scale-105 duration-300 hover:bg-gray-900"
+                            className="bg-red-700 text-white py-3 w-full rounded-xl mt-5 hover:bg-black duration-300 hover:scale-105"
                         >
                             Registrarse
                         </button>
@@ -157,31 +156,49 @@ export const Register = () => {
 
                     {/* Redirección */}
                     <div className="mt-6 text-sm flex justify-between items-center">
-                        <p className="text-gray-600">¿Ya tienes una cuenta?</p>
+                        <p className="text-gray-900">¿Ya tienes una cuenta?</p>
                         <Link
                             to="/login"
-                            className="py-2 px-5 bg-gray-600 text-white rounded-xl hover:scale-110 hover:bg-gray-900 duration-300"
+                            className="py-2 px-5 bg-black text-white rounded-xl hover:bg-red-700 duration-300 hover:scale-110"
                         >
                             Iniciar sesión
                         </Link>
                     </div>
                 </div>
 
+                {/* PANEL DE IMAGEN */}
+            <div className="w-full md:w-1/2 relative">
+            {backgroundImage && (
+                <>
+                {/* Fondo desenfocado y ampliado para "rellenar" bordes */}
+                <div
+                    aria-hidden="true"
+                    className={`absolute inset-0 transition-opacity duration-1000 ${loaded ? "opacity-100" : "opacity-0"}`}
+                    style={{
+                    backgroundImage: `url(${backgroundImage})`,
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "cover",         // llena todo el contenedor
+                    filter: "blur(12px) brightness(0.55)",
+                    transform: "scale(1.05)",        // un ligero zoom para que no se vean bordes tras el blur
+                    }}
+                />
 
-                {/* PANEL DE IMAGEN DERECHA */}
-                <div className="w-full md:w-1/2 relative">
-                    {backgroundImage && (
-                        <img
-                            src={backgroundImage}
-                            alt="Inspiracional"
-                            onLoad={() => setLoaded(true)}
-                            className={`w-full h-full object-cover transition-opacity duration-1000 ${loaded ? "opacity-100" : "opacity-0"}`}
-                        />
-                    )}
+                {/* Imagen principal, centrada y sin recortarse */}
+                <div className="relative w-full h-96 md:h-full flex items-center justify-center">
+                    <img
+                    src={backgroundImage}
+                    alt="Inspiracional"
+                    onLoad={() => setLoaded(true)}
+                    className={`max-w-full max-h-full object-contain transition-opacity duration-1000 ${loaded ? "opacity-100" : "opacity-0"}`}
+                    />
                 </div>
-
+                </>
+            )}
             </div>
 
+
+            </div>
         </div>
     )
 }
