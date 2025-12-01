@@ -1,6 +1,11 @@
 /* Landing Page de PoliExpo */
 import logoPoliExpo from '../assets/logo-PoliExpo3.png'
 import logoStudentsMain from '../assets/students-group.webp'
+import logoEsfotMain from '../assets/esfot.webp'
+import logoStudents2Main from '../assets/students-group2.webp'
+
+
+
 import AppStoreImage from '../assets/appstore.png'
 import GooglePlayImage from '../assets/googleplay.png'
 import developMan from '../assets/develop-man.webp'
@@ -17,7 +22,7 @@ import { FaMoneyBillTrendUp, FaRegThumbsUp } from "react-icons/fa6";
 import { SiQuicklook } from "react-icons/si";
 import { MdGroups2 } from "react-icons/md";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 
 import { FaPhone } from "react-icons/fa";
@@ -25,6 +30,11 @@ import { IoMdMail } from "react-icons/io";
 
 // API
 import { fetchQuote } from "../api/zenQuotes"; // Ajusta la ruta si cambia
+import AOS from "aos";
+import "aos/dist/aos.css";
+import Typed from "typed.js";
+
+import "./Home.css";
 
 
 export const Home = () => {
@@ -42,6 +52,64 @@ export const Home = () => {
         getQuote();
     }, []);
 
+    useEffect(() => {
+        AOS.init({
+            once: true, // 
+            duration: 1000, // duración del efecto
+            delay: 10000 // retraso en ms
+        });
+    }, []);
+
+    //EFECTOS:  slider imagenes
+        const slideImages = [logoStudentsMain, logoEsfotMain, logoStudents2Main];
+
+        const [currentIndex, setCurrentIndex] = useState(0);
+
+        const goToNext = useCallback(() => {
+            const isLastSlide = currentIndex === slideImages.length - 1;
+            const newIndex = isLastSlide ? 0 : currentIndex + 1;
+            setCurrentIndex(newIndex);
+        }, [currentIndex]);
+
+        const goToPrevious = () => {
+            const isFirstSlide = currentIndex === 0;
+            const newIndex = isFirstSlide ? slideImages.length - 1 : currentIndex - 1;
+            setCurrentIndex(newIndex);
+        };
+
+        useEffect(() => {
+            const timer = setTimeout(goToNext, 4000);
+            return () => clearTimeout(timer);
+        }, [goToNext]);
+
+    // EFECTOS: Letras moviles
+    // //Creamos una referencia que apuntará al elemento span
+          const lema= useRef(null);
+        
+          useEffect(() => {
+            // Opciones de configuración para la animación
+            const typedOptions = {
+              strings: [
+                            'Expón tu talento',
+                            'Comparte tu trabajo',
+                            'Conecta con el mundo'
+                        ], // Texto que se escribirá
+              typeSpeed: 50,   // Velocidad de escritura
+              backSpeed: 30,   // Velocidad de borrado
+              loop: true,      // Repetir la animación
+              cursorChar: ' ', // Caracter del cursor
+            };
+        
+            // Creamos la instancia de Typed.js cuando el componente se monta
+            const typed = new Typed(lema.current, typedOptions);
+        
+            // Función de limpieza: se ejecuta cuando el componente se desmonta
+            return () => {
+              typed.destroy();
+            };
+          }, []); // El array vacío [] asegura que el efecto se ejecute solo una vez
+        
+        
     return (
         <>
             {/* HEADER */}
@@ -84,19 +152,34 @@ export const Home = () => {
             <main className='text-center py-6 px-8 bg-red-50 md:text-center md:flex justify-between items-center gap-10 md:py-1 animate-fadeUp'>
 
                 <div>
-                    <h1 className='font-inter text-red-800 uppercase text-4xl my-4 md:text-6xl'>
+                    <h1 className='text-4xl font-extrabold text-red-800'>
+                        Poli<span className='text-black'>Expo</span>
+                    </h1>
+                    <h1 className='font-inter text-red-800 uppercase text-2xl my-4 md:text-6xl'>
                         Muestra tu mejor trabajo
                     </h1>
 
-                    <p className='text-2xl my-6 font-sans'>
-                        Una exposición permanente del talento estudiantil
-                    </p>
+                    <p className='text-2xl my-6 font-sans' ref={lema}></p>
+
                 </div>
 
-                <div className='hidden md:block'>
-                    <img src={logoStudentsMain} alt="hero" className="animate-fadeInSlow" />
+            <div className="main__gallery">
+                <div className="slider">
+                <button onClick={goToPrevious} className="slider__arrow slider__arrow--left">
+                    ❮
+                </button>
+                <img
+                    key={currentIndex} 
+                    src={slideImages[currentIndex]}
+                    alt="Main_images"
+                    className="slider__image"
+                />
+                <button onClick={goToNext} className="slider__arrow slider__arrow--right">
+                    ❯
+                </button>
                 </div>
-                
+            </div>
+
             </main>
 
 
@@ -206,12 +289,31 @@ export const Home = () => {
             </section>
 
 
+                {/* PUBLICAIONES */}
+            <section className='container mx-auto px-4 animate-fadeUp'>
+                    <div id="publish" className='container mx-auto relative mt-6'>
+                    <h2 className='font-semibold text-3xl relative z-10 w-fit text-center mx-auto bg-white px-6 py-2'>
+                        Publicaciones destacadas
+                    </h2>
+                    <div className='text-red-900 border-2 absolute top-1/2 w-full left-0 z-0'></div>
+                </div>
+                <div id="services" className='container mx-auto relative mt-6'>
+                </div>
+
+                <div className='my-10 flex justify-between flex-wrap gap-5'>
+
+                   
+
+                </div>
+            </section>
+
+
             {/* COMENTARIOS */}
             <section className='container mx-auto px-4 animate-fadeUp'>
 
                 <div id="comments" className='container mx-auto relative mt-6'>
                     <h2 className='font-semibold text-3xl relative z-10 w-fit text-center mx-auto bg-white px-6 py-2'>
-                        Comentarios de Miembros
+                        Comentarios 
                     </h2>
                     <div className='text-red-900 border-2 absolute top-1/2 w-full left-0 z-0'></div>
                 </div>
@@ -239,7 +341,7 @@ export const Home = () => {
 
 
             {/* FOOTER */}
-            <footer id="footer" className="bg-red-50 mt-20 rounded-t-3xl py-14 px-6">
+            <footer id="footer" className="bg-red-50 mt-20 rounded-t-3xl py-14 px-6" data-aos="fade-up">
 
                 <div className="container mx-auto grid md:grid-cols-3 gap-10 text-center md:text-left">
 
