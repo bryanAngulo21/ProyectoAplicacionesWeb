@@ -113,21 +113,23 @@ export const Home = () => {
     return (
         <>
             {/* HEADER */}
-            <header className="container mx-auto px-4 py-4 flex items-center justify-between bg-white shadow-sm sticky top-0 z-50 transition-all">
+            <header className="w-full px-25 py-4 flex items-center justify-between bg-white shadow-sm sticky top-0 z-50 transition-all">
+            
+            {/* Logo */}
+            <img src={logoPoliExpo} alt="logo" className="w-20 h-20" />
 
-                <img src={logoPoliExpo} alt="logo" className="w-20 h-20" />
+            {/* Nombre */}
+            <h1 className="text-2xl font-extrabold text-red-800">
+                Poli<span className="text-black">Expo</span>
+            </h1>
 
-                <h1 className='text-2xl font-extrabold text-red-800'>
-                    Poli<span className='text-black'>Expo</span>
-                </h1>
-
-                {/* Menú hamburguesa */}
-                <button 
-                    onClick={() => setOpen(!open)} 
-                    className="text-3xl md:hidden text-red-800"
-                >
-                    {open ? <HiX /> : <HiMenu />}
-                </button>
+            {/* Menú hamburguesa */}
+            <button 
+                onClick={() => setOpen(!open)} 
+                className="text-3xl md:hidden text-red-800"
+            >
+                {open ? <HiX /> : <HiMenu />}
+            </button>
 
                 {/* MENU */}
                 <nav 
@@ -151,17 +153,20 @@ export const Home = () => {
             {/* HERO */}
             <main className='text-center py-6 px-8 bg-red-50 md:text-center md:flex justify-between items-center gap-10 md:py-1 animate-fadeUp'>
 
-                <div>
-                    <h1 className='text-4xl font-extrabold text-red-800'>
-                        Poli<span className='text-black'>Expo</span>
-                    </h1>
-                    <h1 className='font-inter text-red-800 uppercase text-2xl my-4 md:text-6xl'>
-                        Muestra tu mejor trabajo
-                    </h1>
+            <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-red-800">
+                Poli<span className="text-black">Expo</span>
+            </h1>
 
-                    <p className='text-2xl my-6 font-sans' ref={lema}></p>
+            <h2 className="text-2xl md:text-4xl lg:text-6xl font-inter text-red-800 uppercase my-4">
+                Muestra tu mejor trabajo
+            </h2>
 
-                </div>
+            <p
+                className="text-xl md:text-2xl lg:text-3xl font-inter my-4"
+                ref={lema}
+            ></p>
+            </div>
 
             <div className="main__gallery">
                 <div className="slider">
