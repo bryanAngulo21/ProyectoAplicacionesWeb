@@ -40,7 +40,7 @@ export const Register = () => {
 
             {/* Fondo principal */}
             <div
-                className="absolute inset-0 bg-[url('/images/landscape_register.jpg')] bg-cover bg-center opacity-40"
+                className="absolute inset-0 bg-[url('/images/landscape_register.webp')] bg-cover bg-center opacity-40"
             ></div>
 
             {/* Contenedor general */}

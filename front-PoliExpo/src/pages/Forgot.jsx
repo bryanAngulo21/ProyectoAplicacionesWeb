@@ -19,7 +19,7 @@ export const Forgot = () => {
 
             {/* Imagen de fondo */}
             <div 
-                className="absolute inset-0 bg-[url('/public/images/landscape_forgot.jpg')] bg-cover bg-center bg-fixed z-0 opacity-70"
+                className="absolute inset-0 bg-[url('/public/images/landscape_forgot.webp')] bg-cover bg-center bg-fixed z-0 opacity-70"
 
             ></div>
 

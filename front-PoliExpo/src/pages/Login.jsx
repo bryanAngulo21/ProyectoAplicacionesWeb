@@ -37,7 +37,7 @@ const Login = () => {
 
             {/* Imagen de fondo */}
             <div 
-                className="absolute inset-0 bg-[url('/public/images/landscape_login.jpg')] bg-cover bg-center opacity-40"
+                className="absolute inset-0 bg-[url('/public/images/landscape_login.webp')] bg-cover bg-center opacity-40"
             ></div>
 
             {/* Formulario */}
