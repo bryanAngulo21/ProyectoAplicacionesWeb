@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken"
 import Estudiante from "../models/Estudiante.js"
 
-
 /**
  * Crear token JWT
  * @param {string} id - ID del usuario
@@ -26,6 +25,12 @@ const verificarTokenJWT = async (req, res, next) => {
             const estudianteBDD = await Estudiante.findById(id).lean().select("-password")
             if (!estudianteBDD) return res.status(401).json({ msg: "Usuario no encontrado" })
             req.estudianteHeader = estudianteBDD
+            next()
+        }
+        else{
+            const publicacionBDD = await Publicacion.findById(id).lean().select("-password")
+            if (!publicacionBDD) return res.status(401).json({ msg: "Usuario no encontrado" })
+            req.publicacionHeader = publicacionBDD
             next()
         }
     } catch (error) {

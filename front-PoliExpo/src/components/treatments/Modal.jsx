@@ -7,7 +7,7 @@ const ModalTreatments = () => {
             <div className="bg-gray-800 rounded-lg shadow-lg overflow-y-auto  max-w-lg w-full border
             border-gray-700 relative">
 
-                <p className="text-white font-bold text-lg text-center mt-4">Tratamiento</p>
+                <p className="text-white font-bold text-lg text-center mt-4">Comentarios</p>
 
                 {/* Formulario */}
                 <form className="p-10">
@@ -51,7 +51,7 @@ const ModalTreatments = () => {
 
                     {/* Campo precio */}
                     <div>
-                        <label className="mb-2 block text-sm font-semibold text-gray-50">Precio</label>
+                        <label className="mb-2 block text-sm font-semibold text-gray-50">Likes</label>
                         <input
                             type="text" 
                             inputMode="tel"

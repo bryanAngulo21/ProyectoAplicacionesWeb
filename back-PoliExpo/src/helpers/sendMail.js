@@ -32,7 +32,27 @@ const sendMailToRecoveryPassword = (userMail, token) => {
   );
 };
 
-export { sendMailToRegister, sendMailToRecoveryPassword };
+const sendMailToOwner = (userMail, password) => {
+
+    return sendMail(
+        userMail,
+        "Bienvenido - Autor de la publicacion",
+        `
+            <h1>PoliExpo</h1>
+            <p>Bienvenido a PoliExpo, estas son tus credenciales de acceso:</p>
+            <p><strong>Contraseña:</strong> ${password}</p>
+            <a href="${process.env.URL_FRONTEND}login">Iniciar sesión</a>
+            <hr>
+           <footer>El equipo de PoliExpo te da la más cordial bienvenida.</footer>
+        `
+        )
+}
+
+export { 
+  sendMailToRegister, 
+  sendMailToRecoveryPassword,
+  sendMailToOwner 
+};
 
 
 /*import sendMail from "../config/nodemailer.js"

@@ -13,8 +13,8 @@ const TableTreatments = ({ treatments }) => {
                         <th className="p-2">Nombre</th>
                         <th className="p-2">Descripción</th>
                         <th className="p-2">Prioridad</th>
-                        <th className="p-2">Precio</th>
-                        <th className="p-2">Estado pago</th>
+                        <th className="p-2">Likes</th>
+                        <th className="p-2">Estado de avance</th>
                         <th className="p-2">Acciones</th>
                     </tr>
                 </thead>

@@ -1,14 +1,37 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import TableTreatments from "../components/treatments/Table"
 import ModalTreatments from "../components/treatments/Modal"
 
 
+import { useParams } from "react-router"
+import {useFetch} from "../hooks/useFetch"
+
 
 const Details = () => {
     
-
+    const { id } = useParams()
+    const [publication, setPublication] = useState({})
+    const  fetchDataBackend  = useFetch()
     const [treatments, setTreatments] = useState(["demo"])
+
+    const formatDate = (date) => {
+        return new Date(date).toLocaleDateString('es-EC', { dateStyle: 'long', timeZone: 'UTC' })
+    }
+
+    useEffect(() => {
+        const listPublication = async () => {
+            const url = `${import.meta.env.VITE_BACKEND_URL}/publicacion/${id}`
+            const storedUser = JSON.parse(localStorage.getItem("auth-token"))
+            const headers= {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${storedUser.state.token}`
+            }
+            const response = await fetchDataBackend(url, null, "GET", headers)
+            setPublication(response)
+        }
+        listPublication()
+    }, [id, fetchDataBackend])
 
 
 
@@ -36,52 +59,53 @@ const Details = () => {
                             <ul className="pl-5">
 
                                 <li className="text-md mt-2">
-                                    <span className="text-gray-600 font-bold">Cédula: </span>
+                                    <span className="text-gray-600 font-bold">Cédula: {publication?.cedulaAutor}</span>
                                 </li>
 
                                 <li className="text-md mt-2">
-                                    <span className="text-gray-600 font-bold">Nombres completos: </span>
+                                    <span className="text-gray-600 font-bold">Nombres completos: {publication?.nombreAutor}</span>
                                 </li>
 
                                 <li className="text-md mt-2">
-                                    <span className="text-gray-600 font-bold">Correo electrónico: </span>
+                                    <span className="text-gray-600 font-bold">Correo electrónico: {publication?.emailAutor}</span>
                                 </li>
 
                                 <li className="text-md mt-2">
-                                <span className="text-gray-600 font-bold">Celular: </span>
+                                <span className="text-gray-600 font-bold">Celular: {publication?.celularAutor}</span>
                                 </li>
 
                             </ul>
 
 
 
-                            <li className="text-md text-gray-00 mt-4 font-bold text-xl">Datos de la mascota</li>
+                            <li className="text-md text-gray-00 mt-4 font-bold text-xl">Datos del proyecto</li>
 
 
-                            {/* Datos del paciente */}
+                            {/* Datos del autor */}
                             <ul className="pl-5">
 
                                 <li className="text-md mt-2">
-                                    <span className="text-gray-600 font-bold">Nombre: </span>
+                                    <span className="text-gray-600 font-bold">Nombre: {publication?.nombrePublicacion}</span>
                                 </li>
 
                                 <li className="text-md mt-2">
-                                    <span className="text-gray-600 font-bold">Tipo: </span>
+                                    <span className="text-gray-600 font-bold">Tipo: {publication?.tipoPublicacion}</span>
                                 </li>
 
                                 <li className="text-md mt-2">
-                                    <span className="text-gray-600 font-bold">Fecha de nacimiento: </span>
+                                    <span className="text-gray-600 font-bold">Fecha de creacion: {formatDate(publication?.fechaCreacionPublicacion)}</span>
                                 </li>
 
                                 <li className="text-md mt-2">
                                     <span className="text-gray-600 font-bold">Estado: </span>
                                     <span className="bg-blue-100 text-green-500 text-xs font-medium 
                                         mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                                    {publication?.estadoPublicacion && "activo"}
                                     </span>
                                 </li>
 
                                 <li className="text-md text-gray-00 mt-4">
-                                    <span className="text-gray-600 font-bold">Observación: </span>
+                                    <span className="text-gray-600 font-bold">Observación: {publication?.detallePublicacion}</span>
                                 </li>
                             </ul>
 
@@ -92,8 +116,7 @@ const Details = () => {
                     
                     {/* Imagen lateral */}
                     <div>
-                        <img src="https://cdn-icons-png.flaticon.com/512/2138/2138440.png" 
-                            alt="dogandcat" className='h-80 w-80' />
+                        <img src={publication?.imagenPublicacion || publication?.imagenPublicacionIA} alt="dogandcat" className='h-80 w-80 rounded-full'/>
                     </div>
                 </div>
 
@@ -101,12 +124,12 @@ const Details = () => {
                 <hr className='my-4 border-t-2 border-gray-300' />
 
 
-                {/* Sección de tratamientos */}
+                {/* Sección de comentarios */}
                 <div className='flex justify-between items-center'>
 
 
-                    {/* Apertura del modal tratamientos */}
-                    <p>Este módulo te permite gestionar tratamientos</p>
+                    {/* Apertura del modal comentarios*/}
+                    <p>Este módulo te permite gestionar los comentarios del proyecto</p>
                     {
                         true &&
                         (
@@ -121,7 +144,7 @@ const Details = () => {
                 </div>
                 
 
-                {/* Mostrar los tratamientos */}
+                {/* Mostrar los cambios del proyecto */}
                 {
                     treatments.length == 0
                         ?
