@@ -1,28 +1,26 @@
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Crear el transporte SMTP con Gmail
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS
-  }
-});
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-// Función genérica para enviar correos
+/**
+ * Función genérica para enviar correos con SendGrid
+ */
 const sendMail = async (to, subject, html) => {
   try {
-    const info = await transporter.sendMail({
-      from: `"PoliExpo" <${process.env.GMAIL_USER}>`,
+    const msg = {
       to,
+      from: 'andiubra@gmail.com', // Debe ser un remitente verificado en SendGrid
       subject,
-      html
-    });
-    console.log('✅ Email enviado:', info.messageId);
+      html,
+    };
+
+    const info = await sgMail.send(msg);
+    console.log('✅ Email enviado:', info);
   } catch (error) {
-    console.error('❌ Error enviando email:', error);
+    // Mostrar error completo de SendGrid
+    console.error('❌ Error enviando email:', error.response ? error.response.body : error);
   }
 };
 
