@@ -47,7 +47,7 @@ router.get(
 router.get(
   '/auth/google/callback',
   passport.authenticate('google', { 
-    failureRedirect: '/api/estudiante/auth/google/failure',
+    failureRedirect: 'http://localhost:5173/login?error=google_auth_failed',
     session: false 
   }),
   googleCallback  // ← Usar el controller

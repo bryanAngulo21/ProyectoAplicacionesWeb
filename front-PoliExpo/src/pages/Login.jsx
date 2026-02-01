@@ -1,10 +1,14 @@
 import { useState } from "react"
 import { MdVisibility, MdVisibilityOff, MdEmail, MdLock } from "react-icons/md";
+import { FcGoogle } from "react-icons/fc"; // Icono de Google más moderno
 
 import { Link, useNavigate } from "react-router"
 import { useFetch } from '../hooks/useFetch'
 import { ToastContainer } from 'react-toastify'
 import { useForm } from 'react-hook-form'
+
+// Importamos el servicio de autenticación
+import { authService } from "../services/api"
 
 //proteccion de rutas
 import storeAuth from "../context/storeAuth"
@@ -14,21 +18,50 @@ import logoPoliExpo from '../assets/logo-PoliExpo3.png'
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
     const navigate = useNavigate()
     const { register, handleSubmit, formState: { errors } } = useForm()
     const fetchDataBackend = useFetch()
 
     const { setToken, setRol } = storeAuth()
 
+    // Login tradicional
     const loginUser = async (dataForm) => {
-        const url = `${import.meta.env.VITE_BACKEND_URL}/login`
-        const response = await fetchDataBackend(url, dataForm, 'POST')
-        setToken(response.token)
-        setRol(response.rol)
-        
-        if (response) {
-            navigate('/dashboard')
+        setLoading(true);
+        try {
+            const response = await authService.login(dataForm.email, dataForm.password);
+            
+            // Almacenar token y rol
+            setToken(response.data.token);
+            setRol(response.data.rol);
+            
+            // Guardar datos adicionales en localStorage si es necesario
+            localStorage.setItem('userData', JSON.stringify({
+                nombre: response.data.nombre,
+                apellido: response.data.apellido,
+                email: response.data.email,
+                rol: response.data.rol,
+                fotoPerfil: response.data.fotoPerfil,
+                _id: response.data._id
+            }));
+            
+            // Redirigir al dashboard
+            navigate('/dashboard');
+            
+        } catch (error) {
+            console.error('Error en login:', error);
+            // Tu hook useFetch ya maneja los errores con toast
+        } finally {
+            setLoading(false);
         }
+    }
+
+    // Login con Google
+    const handleGoogleLogin = () => {
+        setGoogleLoading(true);
+        authService.googleAuth();
+        // La redirección se maneja automáticamente
     }
 
     return (
@@ -72,7 +105,13 @@ const Login = () => {
                                 type="email"
                                 placeholder="Ingresa tu correo"
                                 className="w-full rounded-lg border border-gray-300 py-2 px-3 pl-10 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition-all duration-300"
-                                {...register("email", { required: "El correo es obligatorio" })}
+                                {...register("email", { 
+                                    required: "El correo es obligatorio",
+                                    pattern: {
+                                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                        message: "Ingresa un correo válido"
+                                    }
+                                })}
                             />
                         </div>
                         {errors.email && (
@@ -95,7 +134,10 @@ const Login = () => {
                                 type={showPassword ? "text" : "password"}
                                 placeholder="************"
                                 className="w-full rounded-lg border border-gray-300 py-2 px-3 pl-10 pr-12 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition-all duration-300"
-                                {...register("password", { required: "La contraseña es obligatoria" })}
+                                {...register("password", { 
+                                    required: "La contraseña es obligatoria",
+                                    
+                                })}
                             />
 
                             {errors.password && (
@@ -118,27 +160,50 @@ const Login = () => {
                     {/* Botón Login */}
                     <button
                         type="submit"
-                        className="bg-red-700 text-white py-3 w-full rounded-xl mt-5 hover:bg-black duration-300 hover:scale-105 transition-all"
+                        disabled={loading}
+                        className={`bg-red-700 text-white py-3 w-full rounded-xl mt-5 hover:bg-black duration-300 hover:scale-105 transition-all flex items-center justify-center gap-2 ${
+                            loading ? 'opacity-70 cursor-not-allowed' : ''
+                        }`}
                     >
-                        Iniciar sesión
+                        {loading ? (
+                            <>
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                Procesando...
+                            </>
+                        ) : 'Iniciar sesión'}
                     </button>
                 </form>
 
                     {/* Separador */}
                     <div className="mt-6 flex items-center text-gray-500">
-                        <hr className="flex-1 border-black" />
-                        <span className="px-3 text-sm text-black">O</span>
-                        <hr className="flex-1 border-black" />
+                        <hr className="flex-1 border-gray-300" />
+                        <span className="px-3 text-sm text-gray-500">O continúa con</span>
+                        <hr className="flex-1 border-gray-300" />
                     </div>
 
-                    {/* Botón Google */}
-                    <button className="w-full mt-5 flex items-center justify-center border border-black py-3 rounded-xl text-sm hover:bg-gray-100 transition font-medium text-black">
-                        <img className="w-5 mr-2" src="https://cdn-icons-png.flaticon.com/512/281/281764.png" alt="Google" />
-                        Iniciar sesión con Google
+                    {/* Botón Google - Actualizado */}
+                    <button 
+                        onClick={handleGoogleLogin}
+                        disabled={googleLoading}
+                        className={`w-full mt-4 flex items-center justify-center border border-gray-300 py-3 rounded-xl text-sm hover:bg-gray-50 transition font-medium text-gray-700 ${
+                            googleLoading ? 'opacity-70 cursor-not-allowed' : ''
+                        }`}
+                    >
+                        {googleLoading ? (
+                            <>
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-700 mr-2"></div>
+                                Redirigiendo a Google...
+                            </>
+                        ) : (
+                            <>
+                                <FcGoogle className="text-xl mr-2" />
+                                Iniciar sesión con Google
+                            </>
+                        )}
                     </button>
 
                     {/* Enlace olvidar contraseña */}
-                    <div className="mt-5 text-center border-t pt-4 border-black">
+                    <div className="mt-5 text-center border-t pt-4 border-gray-200">
                         <Link to="/forgot/id" className="text-sm text-red-600 hover:text-red-800 transition">
                             ¿Olvidaste tu contraseña?
                         </Link>
@@ -146,13 +211,13 @@ const Login = () => {
 
                     {/* Enlaces inferior */}
                     <div className="mt-4 flex justify-between items-center text-sm">
-                        <Link to="/" className="text-black hover:text-red-600 transition">
+                        <Link to="/" className="text-gray-600 hover:text-red-600 transition">
                              ← Volver al inicio
                         </Link>
 
                         <Link
                             to="/register"
-                            className="py-2 px-5 bg-black text-white rounded-xl hover:bg-red-600 transition"
+                            className="py-2 px-5 bg-black text-white rounded-xl hover:bg-red-600 transition hover:scale-105"
                         >
                             Registrarse
                         </Link>

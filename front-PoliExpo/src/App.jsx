@@ -24,6 +24,16 @@ import { useEffect } from 'react'
 import storeProfile from './context/storeProfile'
 import storeAuth from './context/storeAuth'
 
+import GoogleCallback from './pages/GoogleCallback';
+
+import DonacionPage from './pages/DonacionPage';
+import DonacionesAdmin from './pages/DonacionesAdmin';
+
+import ExplorarProyectos from './pages/ExplorarProyectos';
+import CrearProyecto from './pages/CrearProyecto';
+import ListarProyecto from './pages/ListarProyecto.jsx';
+import DetalleProyecto from './pages/DetalleProyecto';
+
 
 
 function App() {
@@ -45,6 +55,8 @@ function App() {
           <Route element={<PublicRoute />}>
             <Route index element={<Home />} />
             <Route path='login' element={<Login />} />
+            <Route path='google-callback' element={<GoogleCallback />} />
+
             <Route path='register' element={<Register />} />
             <Route path='forgot/:id' element={<Forgot />} />
             <Route path='confirm/:token' element={<Confirm />} />
@@ -65,6 +77,15 @@ function App() {
                   <Route path='update/:id' element={<Update />} />
                   <Route path='chat' element={<Chat />} />
                   <Route path='facerecognition' element={<FacerRecognition/>} />
+                  
+                  <Route path='donar' element={<DonacionPage />} />
+                  <Route path='donaciones' element={<DonacionesAdmin />} />
+                  <Route path='donar' element={<DonacionPage />} />
+                  <Route path='explorar' element={<ExplorarProyectos />} />
+                  <Route path='crear' element={<CrearProyecto />} />
+                  <Route path='listar' element={<ListarProyecto />} />
+                  <Route path='proyecto/:id' element={<DetalleProyecto />} />
+
                 </Route>
               </Routes>
             </ProtectedRoute>

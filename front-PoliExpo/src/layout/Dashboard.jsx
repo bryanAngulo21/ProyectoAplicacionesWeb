@@ -11,6 +11,10 @@ import { MdPublishedWithChanges } from "react-icons/md";
 import { VscOpenPreview } from "react-icons/vsc";
 import { FaRegComment } from "react-icons/fa";
 import { MdLogout } from 'react-icons/md';
+import { MdAdminPanelSettings, MdAttachMoney } from "react-icons/md";
+import { FaHeart, FaUserShield } from "react-icons/fa";
+
+import { FaSearch } from "react-icons/fa";
 
 const Dashboard = () => {
     const location = useLocation()
@@ -85,7 +89,7 @@ const Dashboard = () => {
 
                     
 
-                    
+                    {/* reconoceimtno 
                     <li>
                         <Link 
                             to='/dashboard/facerecognition'
@@ -100,8 +104,98 @@ const Dashboard = () => {
                             Mis Publicaciones
                         </Link>
                     </li>
+*/}
+
+                    
+
+                   
 
                     <li>
+                    <Link 
+                        to="/dashboard/explorar"
+                        className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
+                        ${urlActual === '/dashboard/explorar'
+                        ? 'bg-gray-900 text-white'
+                        : 'text-gray-400 hover:text-white hover:bg-gray-800'}
+                        `}
+                    >
+                        <FaSearch />
+                        Explorar Proyectos
+                    </Link>
+                    </li>
+
+                    <li>
+                        <Link 
+                            to='/dashboard/chat'
+                            className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
+                            ${urlActual === '/dashboard/chat'
+                                ? 'bg-gray-900 text-white'
+                                : 'text-gray-400 hover:text-white hover:bg-gray-800'}
+                            `}
+                        >
+                            <FaRegComment />
+                            Contactar 
+                        </Link>
+                    </li>
+
+                </ul>
+
+            {/* MENÚ PARA ADMINISTRADOR */}
+            {user?.rol === 'admin' && (
+            <>
+                <li className="mt-4 pt-4 border-t border-gray-700">
+                <p className="text-xs uppercase text-gray-500 px-4 mb-2">Administración</p>
+                </li>
+                
+                <li>
+                <Link 
+                    to="/dashboard/admin"
+                    className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
+                    ${urlActual === '/dashboard/admin'
+                    ? 'bg-red-900 text-white'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800'}
+                    `}
+                >
+                    <MdAdminPanelSettings />
+                    Panel Admin
+                </Link>
+                </li>
+                
+                <li>
+                <Link 
+                    to="/dashboard/donaciones"
+                    className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
+                    ${urlActual === '/dashboard/donaciones'
+                    ? 'bg-red-900 text-white'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800'}
+                    `}
+                >
+                    <MdAttachMoney />
+                    Gestión de Donaciones
+                </Link>
+                </li>
+                
+                <li>
+                <Link 
+                    to="/dashboard/usuarios"
+                    className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
+                    ${urlActual === '/dashboard/usuarios'
+                    ? 'bg-red-900 text-white'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800'}
+                    `}
+                >
+                    <FaUserShield />
+                    Gestión de Usuarios
+                </Link>
+                </li>
+            </>
+            )}
+
+            {/* MENÚ PARA ESTUDIANTE */}
+            
+            {user?.rol === 'estudiante' && (
+            <>
+            <li>
                         <Link 
                             to='/dashboard/list'
                             className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
@@ -131,22 +225,53 @@ const Dashboard = () => {
                     </li>
 
                     <li>
-                        <Link 
-                            to='/dashboard/chat'
-                            className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
-                            ${urlActual === '/dashboard/chat'
-                                ? 'bg-gray-900 text-white'
-                                : 'text-gray-400 hover:text-white hover:bg-gray-800'}
-                            `}
-                        >
-                            <FaRegComment />
-                            Contactar 
-                        </Link>
+                    <Link 
+                        to="/dashboard/crear"
+                        className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
+                        ${urlActual === '/dashboard/crear'
+                        ? 'bg-gray-900 text-white'
+                        : 'text-gray-400 hover:text-white hover:bg-gray-800'}
+                        `}
+                    >
+                        <span>📝</span>
+                        Crear Proyecto
+                    </Link>
                     </li>
 
-                </ul>
+                    <li>
+                    <Link 
+                        to="/dashboard/listar"
+                        className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
+                        ${urlActual === '/dashboard/listar'
+                        ? 'bg-gray-900 text-white'
+                        : 'text-gray-400 hover:text-white hover:bg-gray-800'}
+                        `}
+                    >
+                        <span>📋</span>
+                        Mis Proyectos
+                    </Link>
+                    </li>
 
-
+                <li className="mt-4 pt-4 border-t border-gray-700">
+                <p className="text-xs uppercase text-gray-500 px-4 mb-2">Apoya</p>
+                </li>
+                
+                <li>
+                <Link 
+                    to="/dashboard/donar"
+                    className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
+                    ${urlActual === '/dashboard/donar'
+                    ? 'bg-red-900 text-white'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800'}
+                    `}
+                >
+                    <FaHeart />
+                    Realizar Donación
+                </Link>
+                </li>
+            </>
+            )}
+                    
                 </div>
 
 
@@ -197,6 +322,7 @@ const Dashboard = () => {
                         </p>
                     </div>
 
+                    
                 </div>
 
             </div>
