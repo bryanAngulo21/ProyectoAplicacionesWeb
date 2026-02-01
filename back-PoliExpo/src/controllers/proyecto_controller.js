@@ -1,10 +1,7 @@
 import Proyecto from '../models/Proyecto.js';
 import mongoose from 'mongoose';
 
-/**
- * Listar todos los proyectos
- * Público
- */
+// FUNCIONES ORIGINALES
 const listarProyectos = async (req, res) => {
   try {
     const proyectos = await Proyecto.find()
@@ -18,10 +15,6 @@ const listarProyectos = async (req, res) => {
   }
 };
 
-/**
- * Crear un nuevo proyecto
- * Protegido
- */
 const crearProyecto = async (req, res) => {
   try {
     const proyecto = new Proyecto(req.body);
@@ -35,10 +28,6 @@ const crearProyecto = async (req, res) => {
   }
 };
 
-/**
- * Obtener un proyecto por ID
- * Público
- */
 const obtenerProyecto = async (req, res) => {
   const { id } = req.params;
 
@@ -48,11 +37,16 @@ const obtenerProyecto = async (req, res) => {
 
   try {
     const proyecto = await Proyecto.findById(id)
-      .populate('autor', 'nombre email');
+      .populate('autor', 'nombre email')
+      .populate('colaboradores', 'nombre email')
+      .populate('comentarios.estudiante', 'nombre apellido');
 
     if (!proyecto) {
       return res.status(404).json({ msg: 'Proyecto no encontrado' });
     }
+
+    // Incrementar vistas
+    await proyecto.incrementarVistas();
 
     res.json(proyecto);
   } catch (error) {
@@ -61,10 +55,6 @@ const obtenerProyecto = async (req, res) => {
   }
 };
 
-/**
- * Actualizar proyecto
- * Protegido - solo autor
- */
 const actualizarProyecto = async (req, res) => {
   const { id } = req.params;
 
@@ -91,10 +81,6 @@ const actualizarProyecto = async (req, res) => {
   }
 };
 
-/**
- * Eliminar proyecto
- * Protegido - solo autor
- */
 const eliminarProyecto = async (req, res) => {
   const { id } = req.params;
 
@@ -117,10 +103,6 @@ const eliminarProyecto = async (req, res) => {
   }
 };
 
-/**
- * Agregar like a un proyecto
- * Protegido
- */
 const agregarLike = async (req, res) => {
   const { id } = req.params;
 
@@ -145,10 +127,6 @@ const agregarLike = async (req, res) => {
   }
 };
 
-/**
- * Agregar comentario
- * Protegido
- */
 const agregarComentario = async (req, res) => {
   const { id } = req.params;
   const { comentario } = req.body;
@@ -165,8 +143,8 @@ const agregarComentario = async (req, res) => {
     }
 
     proyecto.comentarios.push({
-      autor: req.estudianteHeader._id,
-      comentario
+      estudiante: req.estudianteHeader._id,
+      texto: comentario
     });
 
     await proyecto.save();
@@ -177,6 +155,103 @@ const agregarComentario = async (req, res) => {
   }
 };
 
+// FUNCIONES NUEVAS 
+const quitarLike = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const proyecto = await Proyecto.findById(id);
+
+    if (!proyecto) {
+      return res.status(404).json({ msg: 'Proyecto no encontrado' });
+    }
+
+    const index = proyecto.likes.indexOf(req.estudianteHeader._id);
+    if (index === -1) {
+      return res.status(400).json({ msg: 'No has dado like a este proyecto' });
+    }
+
+    proyecto.likes.splice(index, 1);
+    await proyecto.save();
+
+    res.json({ likes: proyecto.likes.length });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: 'Error al quitar like' });
+  }
+};
+
+const buscarProyectos = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim().length === 0) {
+      return res.status(400).json({ msg: 'Debe proporcionar un término de búsqueda' });
+    }
+
+    const proyectos = await Proyecto.find(
+      { $text: { $search: q } },
+      { score: { $meta: "textScore" } }
+    )
+      .populate('autor', 'nombre email')
+      .sort({ score: { $meta: "textScore" } })
+      .limit(20);
+
+    res.json(proyectos);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: 'Error al buscar proyectos' });
+  }
+};
+
+const proyectosDestacados = async (req, res) => {
+  try {
+    const proyectos = await Proyecto.find({ estado: 'publicado' })
+      .populate('autor', 'nombre email')
+      .sort({ vistas: -1 })
+      .limit(6);
+
+    res.json(proyectos);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: 'Error al obtener proyectos destacados' });
+  }
+};
+
+const proyectosPorCategoria = async (req, res) => {
+  try {
+    const { categoria } = req.params;
+    
+    if (!['academico', 'extracurricular'].includes(categoria)) {
+      return res.status(400).json({ msg: 'Categoría no válida' });
+    }
+
+    const proyectos = await Proyecto.find({ categoria, estado: 'publicado' })
+      .populate('autor', 'nombre email')
+      .sort({ createdAt: -1 });
+
+    res.json(proyectos);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: 'Error al obtener proyectos por categoría' });
+  }
+};
+
+const proyectosPorCarrera = async (req, res) => {
+  try {
+    const { carrera } = req.params;
+    
+    const proyectos = await Proyecto.find({ carrera, estado: 'publicado' })
+      .populate('autor', 'nombre email')
+      .sort({ createdAt: -1 });
+
+    res.json(proyectos);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: 'Error al obtener proyectos por carrera' });
+  }
+};
+
 export {
   listarProyectos,
   crearProyecto,
@@ -184,5 +259,11 @@ export {
   actualizarProyecto,
   eliminarProyecto,
   agregarLike,
-  agregarComentario
+  agregarComentario,
+  // Nuevas funciones
+  quitarLike,
+  buscarProyectos,
+  proyectosDestacados,
+  proyectosPorCategoria,
+  proyectosPorCarrera
 };

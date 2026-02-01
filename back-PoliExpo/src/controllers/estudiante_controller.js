@@ -1,15 +1,9 @@
-
 import Estudiante from "../models/Estudiante.js"
 import { sendMailToRecoveryPassword, sendMailToRegister } from "../helpers/sendMail.js"
-
-//Prtoteccion de rutas
 import { crearTokenJWT } from "../middlewares/JWT.js"
-//actualizar perfil
 import mongoose from "mongoose"
 
-
 const registro = async (req,res)=>{
-
     try {
         const {email,password} = req.body
         if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Lo sentimos, debes llenar todos los campos"})
@@ -29,25 +23,7 @@ const registro = async (req,res)=>{
     } catch (error) {
         res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }
-
 }
-
-/*
-const confirmarMail = async (req, res) => {
-    try {
-        const { token } = req.params
-        const estudianteBDD = await Estudiante.findOne({ token })
-        if (!estudianteBDD) return res.status(404).json({ msg: "Token inválido o cuenta ya confirmada" })
-        estudianteBDD.token = null
-        estudianteBDD.confirmEmail = true
-        await estudianteBDD.save()
-        res.status(200).json({ msg: "Cuenta confirmada, ya puedes iniciar sesión" })
-
-    } catch (error) {
-    console.error(error)
-        res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
-    }
-}*/
 
 const confirmarMail = async (req, res) => {
   try {
@@ -55,7 +31,6 @@ const confirmarMail = async (req, res) => {
     const estudianteBDD = await Estudiante.findOne({ token });
 
     if (!estudianteBDD) {
-      // Redirigir con mensaje de error al frontend
       return res.redirect(`${process.env.URL_FRONTEND}/confirmado?status=error`);
     }
 
@@ -63,7 +38,6 @@ const confirmarMail = async (req, res) => {
     estudianteBDD.confirmEmail = true;
     await estudianteBDD.save();
 
-    // Redirigir al frontend con mensaje de éxito
     res.redirect(`${process.env.URL_FRONTEND}/confirmado?status=success`);
   } catch (error) {
     console.error(error);
@@ -71,11 +45,7 @@ const confirmarMail = async (req, res) => {
   }
 };
 
-
-
-
 const recuperarPassword = async (req, res) => {
-
     try {
         const { email } = req.body
         if (!email) return res.status(400).json({ msg: "Debes ingresar un correo electrónico" })
@@ -88,12 +58,10 @@ const recuperarPassword = async (req, res) => {
         res.status(200).json({ msg: "Revisa tu correo electrónico para reestablecer tu cuenta" })
         
     } catch (error) {
-    console.error(error)
+        console.error(error)
         res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }
 }
-
-
 
 const comprobarTokenPasword = async (req,res)=>{
     try {
@@ -108,10 +76,7 @@ const comprobarTokenPasword = async (req,res)=>{
     }
 }
 
-
-
 const crearNuevoPassword = async (req,res)=>{
-
     try {
         const{password,confirmpassword} = req.body
         const { token } = req.params
@@ -130,49 +95,41 @@ const crearNuevoPassword = async (req,res)=>{
     }
 }
 
-
-
-
 const login = async(req,res)=>{
-
     try {
-
-        //Paso 1 capturar los daros del req.body
-        // los inputs en fron se deben llamar email y password
-
         const {email,password} = req.body
-
-        //Pso 2 comprobacion de espacios vacios     
-        if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Debes llenar todos los campos"})
         
+        if (Object.values(req.body).includes("")) return res.status(404).json({msg:"Debes llenar todos los campos"})
             
         const estudianteBDD = await Estudiante.findOne({email}).select("-status -__v -token -updatedAt -createdAt")
         if(!estudianteBDD) return res.status(404).json({msg:"El usuario no se encuentra registrado"})
         if(!estudianteBDD.confirmEmail) return res.status(403).json({msg:"Debes verificar tu cuenta antes de iniciar sesión"})
         const verificarPassword = await estudianteBDD.matchPassword(password)
-         if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password no es el correcto"})
+        if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password no es el correcto"})
 
-        //Paso 3
-        //aplico desestructuracion 
-        const {nombre,apellido,direccion,telefono,_id} = estudianteBDD
-        //const {nombre,apellido,direccion,telefono,_id,rol,correo} = estudianteBDD
-        const token = crearTokenJWT(estudianteBDD._id,estudianteBDD.rol)
+        // Actualizar último login
+        if (estudianteBDD.updateLastLogin) {
+            await estudianteBDD.updateLastLogin()
+        }
 
-        //Paso 4 
+        const {nombre, apellido, direccion, celular, _id, rol, carrera, nivel, cedula, fotoPerfil, authProvider} = estudianteBDD
+        const token = crearTokenJWT(estudianteBDD._id, estudianteBDD.rol)
 
-        //solo mando la informacion que se requiere 
         res.status(200).json({
-            //rol,
             token,
+            rol,
             nombre,
             apellido,
             direccion,
-            telefono,
+            celular,
+            carrera,
+            nivel,
+            cedula,
+            fotoPerfil,
+            authProvider,
             _id,
-            email:estudianteBDD.email
-            //correo
+            email: estudianteBDD.email
         })
-
 
     } catch (error) {
         console.error(error)
@@ -180,35 +137,72 @@ const login = async(req,res)=>{
     }
 }
 
+// Login/Registro con Google (desde passport callback)
+const googleCallback = async (req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(400).json({ msg: "Error en autenticación con Google" });
+        }
+
+        const estudiante = req.user;
+        
+        // Actualizar último login
+        if (estudiante.updateLastLogin) {
+            await estudiante.updateLastLogin();
+        }
+// Crear token JWT
+        const token = crearTokenJWT(estudiante._id, estudiante.rol);
+
+        res.status(200).json({
+            msg: "Autenticación con Google exitosa",
+            token,
+            rol: estudiante.rol,
+            nombre: estudiante.nombre,
+            apellido: estudiante.apellido,
+            email: estudiante.email,
+            fotoPerfil: estudiante.fotoPerfil,
+            authProvider: estudiante.authProvider,
+            _id: estudiante._id
+        });
+
+    } catch (error) {
+        console.error("❌ Error en callback Google:", error);
+        res.status(500).json({ msg: "Error en autenticación con Google" });
+    }
+};
+
 const perfil =(req,res)=>{
-	const {token,confirmEmail,createdAt,updatedAt,__v,...datosPerfil} = req.estudianteHeader 
+    const {token,confirmEmail,createdAt,updatedAt,__v,...datosPerfil} = req.estudianteHeader 
     res.status(200).json(datosPerfil)
 }
 
-
 const actualizarPerfil = async (req,res)=>{
-
     try {
-         //Paso 1 obtener datos que recibe el controlador del backend 
         const{_id}=req.estudianteHeader
-        const {nombre,apellido,direccion,celular,email} = req.body
+        const {nombre, apellido, direccion, celular, email, carrera, nivel, cedula, bio, fotoPerfil} = req.body
 
         const estudianteBDD = await Estudiante.findById(_id)
-        if(!estudianteBDD) return res.status(404).json({ msg: `No existe el estudiante con ID ${id}` })
+        if(!estudianteBDD) return res.status(404).json({ msg: `No existe el estudiante con ID ${_id}` })
         if (Object.values(req.body).includes("")) return res.status(400).json({msg:"Debes llenar todos los campos"})
-        if (estudianteBDD.email !== email)
-        {
+        if (estudianteBDD.email !== email) {
             const emailExistente  = await Estudiante.findOne({email})
-            if (emailExistente )
-            {
+            if (emailExistente) {
                 return res.status(404).json({msg:`El email ya se encuentra registrado`})  
             }
         }
+        
+        // Actualizar campos
         estudianteBDD.nombre = nombre ?? estudianteBDD.nombre
         estudianteBDD.apellido = apellido ?? estudianteBDD.apellido
         estudianteBDD.direccion = direccion ?? estudianteBDD.direccion
         estudianteBDD.celular = celular ?? estudianteBDD.celular
         estudianteBDD.email = email ?? estudianteBDD.email
+        estudianteBDD.carrera = carrera ?? estudianteBDD.carrera
+        estudianteBDD.nivel = nivel ?? estudianteBDD.nivel
+        estudianteBDD.cedula = cedula ?? estudianteBDD.cedula
+        estudianteBDD.bio = bio ?? estudianteBDD.bio
+        estudianteBDD.fotoPerfil = fotoPerfil ?? estudianteBDD.fotoPerfil
+        
         await estudianteBDD.save()
         res.status(200).json(estudianteBDD)
         
@@ -220,30 +214,24 @@ const actualizarPerfil = async (req,res)=>{
 
 const actualizarPassword = async (req,res)=>{
     try {
-       
-    //Paso 1 obtener datos que recibe el controlador del backend 
         const{passwordactual, passwordnuevo}=req.body
         const{_id}=req.estudianteHeader
-        //Paso2
+        
         const estudianteBDD = await Estudiante.findById(_id)
-        if(!estudianteBDD) return res.status(404).json({msg:`Lo sentimos, no existe el estudiante ${id}`})
+        if(!estudianteBDD) return res.status(404).json({msg:`Lo sentimos, no existe el estudiante ${_id}`})
 
         const verificarPassword = await estudianteBDD.matchPassword(passwordactual)
         if(!verificarPassword) return res.status(404).json({msg:"Lo sentimos, el password actual no es el correcto"})
         
-        
-        //Paso 3 Logica cuando se ingrese la contrasena se guarda encriptda en la base de datos
         estudianteBDD.password = await estudianteBDD.encryptPassword(passwordnuevo)
-        //metodo asincrono para guardar
         await estudianteBDD.save()
-        //Paso 4 mopswtrar respuesta con res.status
+        
         res.status(200).json({msg:"Password actualizado correctamente"})
     } catch (error) {
+        console.error(error)
         res.status(500).json({ msg: `❌ Error en el servidor - ${error}` })
     }
 }
-
-
 
 export {
     registro,
@@ -252,8 +240,8 @@ export {
     comprobarTokenPasword,
     crearNuevoPassword,
     login,
+    googleCallback,
     perfil,
     actualizarPerfil,
     actualizarPassword
-    
 }
