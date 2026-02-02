@@ -9,7 +9,8 @@ import {
   useElements
 } from '@stripe/react-stripe-js';
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY|| 
+  'pk_test_51SrNzYIbKaYC42xVfcEG2Rn7qwTxEAKdCWo6yr4wcYJBoAhIWIexBRxMqrrQzrGBh1AuDYmSPYrULLOEBl2IfHXY00UpksWlSi');
 
 const StripeDonationForm = ({ onDonationSuccess, onClose }) => {
   const stripe = useStripe();
@@ -24,8 +25,8 @@ const StripeDonationForm = ({ onDonationSuccess, onClose }) => {
   const montosSugeridos = [5, 10, 20, 50, 100];
 
   useEffect(() => {
-    console.log('🔧 Stripe cargado:', !!stripe);
-    console.log('🔧 Stripe Key:', import.meta.env.VITE_STRIPE_KEY?.substring(0, 20) + '...');
+    console.log('Stripe cargado:', !!stripe);
+    console.log('Stripe Key:', import.meta.env.VITE_STRIPE_KEY?.substring(0, 20) + '...');
   }, [stripe]);
 
   const handleInputChange = (e) => {
@@ -53,7 +54,7 @@ const StripeDonationForm = ({ onDonationSuccess, onClose }) => {
     setLoading(true);
 
     try {
-      console.log('🔧 Iniciando proceso de donación...');
+      console.log('Iniciando proceso de donación...');
       
       const cardElement = elements.getElement(CardElement);
       
@@ -69,13 +70,13 @@ const StripeDonationForm = ({ onDonationSuccess, onClose }) => {
       });
 
       if (stripeError) {
-        console.error('❌ Error de Stripe:', stripeError);
+        console.error('Error de Stripe:', stripeError);
         toast.error(`Error: ${stripeError.message}`);
         setLoading(false);
         return;
       }
 
-      console.log('✅ PaymentMethod creado:', paymentMethod.id);
+      console.log('PaymentMethod creado:', paymentMethod.id);
 
       const donationData = {
         paymentMethodId: paymentMethod.id,
@@ -83,41 +84,41 @@ const StripeDonationForm = ({ onDonationSuccess, onClose }) => {
         mensaje: formData.mensaje || '',
       };
       
-      console.log('📤 Enviando al backend:', donationData);
+      console.log('Enviando al backend:', donationData);
       
       const response = await donacionService.donateToPlatform(donationData);
-      console.log('📥 Respuesta del backend:', response.data);
+      console.log('Respuesta del backend:', response.data);
       
       if (response.data.requiereAccion && response.data.clientSecret) {
-        console.log('🔄 Procesando 3D Secure...');
+        console.log('Procesando 3D Secure...');
         
         const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
           response.data.clientSecret
         );
 
         if (confirmError) {
-          console.error('❌ Error 3D Secure:', confirmError);
+          console.error('Error 3D Secure:', confirmError);
           toast.error(`Error en autenticación: ${confirmError.message}`);
           setLoading(false);
           return;
         }
 
-        console.log('✅ 3D Secure completado:', paymentIntent.status);
+        console.log('3D Secure completado:', paymentIntent.status);
         
         if (paymentIntent.status === 'succeeded') {
           await donacionService.confirmDonation({
             paymentIntentId: paymentIntent.id
           });
           
-          toast.success('🎉 ¡Donación realizada con éxito! (3D Secure)');
+          toast.success('¡Donación realizada con éxito! (3D Secure)');
           
           if (onDonationSuccess) {
             onDonationSuccess(response.data.donacion || { monto: formData.monto });
           }
         }
       } else {
-        console.log('✅ Pago exitoso sin 3D Secure');
-        toast.success('🎉 ¡Donación realizada con éxito!');
+        console.log('Pago exitoso sin 3D Secure');
+        toast.success('¡Donación realizada con éxito!');
         
         if (onDonationSuccess) {
           onDonationSuccess(response.data.donacion || { monto: formData.monto });
@@ -132,8 +133,8 @@ const StripeDonationForm = ({ onDonationSuccess, onClose }) => {
       }
       
     } catch (error) {
-      console.error('💥 Error completo:', error);
-      console.error('💥 Detalles del error:', error.response?.data);
+      console.error('Error completo:', error);
+      console.error('Detalles del error:', error.response?.data);
       
       if (error.response?.status === 401) {
         toast.error('Tu sesión expiró. Vuelve a iniciar sesión.');
@@ -254,7 +255,7 @@ const StripeDonationForm = ({ onDonationSuccess, onClose }) => {
               />
             </div>
             <p className="text-xs text-gray-500 mt-2">
-              💡 Usa <span className="font-mono">4242 4242 4242 4242</span> para pruebas
+              Para pruebas usa <span className="font-mono">4242 4242 4242 4242</span>
             </p>
           </div>
           
@@ -266,8 +267,6 @@ const StripeDonationForm = ({ onDonationSuccess, onClose }) => {
           </div>
         </div>
       </div>
-
-
 
       <button
         type="submit"
@@ -307,7 +306,7 @@ const DonacionForm = ({ onDonationSuccess, onClose }) => {
           </p>
           
           <div className="inline-block mt-3 bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full">
-            🧪 Modo Prueba de Stripe
+            Modo Prueba de Stripe
           </div>
         </div>
 
@@ -315,8 +314,6 @@ const DonacionForm = ({ onDonationSuccess, onClose }) => {
           onDonationSuccess={onDonationSuccess} 
           onClose={onClose}
         />
-
-
       </div>
     </Elements>
   );
