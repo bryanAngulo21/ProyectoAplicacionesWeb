@@ -20,7 +20,8 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 })
-
+//conecion chat
+app.set('trust proxy', 1)
 
 // Middlewares 
 app.use(express.json())
@@ -30,6 +31,7 @@ app.use(fileUpload({
     useTempFiles : true,
     tempFileDir : './uploads'
 }))
+
 
 // Configuración de sesiones para OAuth
 app.use(

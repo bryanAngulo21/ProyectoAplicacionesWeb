@@ -8,27 +8,16 @@ connection()
 
 const server = http.createServer(app)
 
-// 🌍 Orígenes permitidos
-const allowedOrigins = [
-  process.env.URL_FRONTEND,     // producción (Render)
-  'http://localhost:5173'       // desarrollo local
-].filter(Boolean) // elimina undefined
-
 const io = new Server(server, {
   cors: {
-    origin: (origin, callback) => {
-      // permitir Postman / server-to-server
-      if (!origin) return callback(null, true)
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true)
-      }
-
-      return callback(new Error(`CORS bloqueado: ${origin}`), false)
-    },
-    methods: ['GET', 'POST'],
+    origin: [
+      process.env.URL_FRONTEND,
+      'http://localhost:5173'
+    ],
     credentials: true
-  }
+  },
+  transports: ['polling', 'websocket'],
+  allowEIO3: true
 })
 
 io.on('connection', (socket) => {

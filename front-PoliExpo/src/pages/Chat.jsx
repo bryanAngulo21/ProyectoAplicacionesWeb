@@ -36,6 +36,7 @@ const Chat = () => {
 
   const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
     withCredentials: true,
+  transports: ['websocket', 'polling']
   })
 
   setSocket(newSocket)
