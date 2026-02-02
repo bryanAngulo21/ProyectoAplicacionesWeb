@@ -5,7 +5,7 @@ const donacionSchema = new mongoose.Schema(
     proyecto: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Proyecto",
-      required: true,
+      required: null,
     },
 
     // Puede ser null si la donación es anónima

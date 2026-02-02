@@ -118,10 +118,7 @@ export const proyectoService = {
   porCarrera: (carrera) => api.get(`/proyectos/carrera/${carrera}`),
   
   // Obtener proyectos del usuario actual
-  getMyProjects: () => {
-    // Necesitas implementar este endpoint en tu backend o filtrar en frontend
-    return api.get('/proyectos');
-  },
+  getMyProjects: () => api.get('/proyectos'),
 };
 
 /* =========================
@@ -131,11 +128,15 @@ export const donacionService = {
   // Donar a la plataforma
   donateToPlatform: (data) => api.post('/donacion/registrar', data),
   
+  // Confirmar donación pendiente
+  confirmDonation: (data) => api.post('/donacion/confirmar', data),
+  
   // Obtener mis donaciones
   getMyDonations: () => api.get('/donaciones/mis-donaciones'),
   
-  // Obtener todas las donaciones (solo admin)
+  // Obtener todas las donaciones (admin)
   getAllDonations: () => api.get('/donaciones/todas'),
+  
 };
 
 /* =========================
@@ -213,5 +214,4 @@ export const reconocimientoService = {
   reconocer: (image) => api.post('/reconocer', { image }),
 };
 
-// Exportar la instancia de axios por si necesitas usarla directamente
 export default api;

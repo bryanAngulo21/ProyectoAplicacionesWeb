@@ -484,7 +484,7 @@ const DetalleProyecto = () => {
             <h3 className="font-bold text-gray-800 mb-4 text-lg">⚡ Acciones Rápidas</h3>
             <div className="space-y-3">
               <button
-                onClick={() => navigate(`/dashboard/update/${proyecto._id}`)}
+                onClick={() => navigate(`/dashboard/actualizar/${proyecto._id}`)}
                 className="w-full bg-white border border-gray-300 hover:border-red-300 text-gray-700 hover:text-red-600 px-4 py-3 rounded-lg text-left transition flex items-center gap-3"
               >
                 <span>✏️</span>

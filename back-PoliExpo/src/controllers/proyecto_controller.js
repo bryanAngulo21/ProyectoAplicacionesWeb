@@ -69,11 +69,38 @@ const actualizarProyecto = async (req, res) => {
       return res.status(403).json({ msg: 'Acción no permitida' });
     }
 
-    proyecto.nombre = req.body.nombre || proyecto.nombre;
-    proyecto.descripcion = req.body.descripcion || proyecto.descripcion;
-    proyecto.categoria = req.body.categoria || proyecto.categoria;
+    // Actualizar TODOS los campos que vienen del frontend
+    if (req.body.titulo !== undefined) proyecto.titulo = req.body.titulo;
+    if (req.body.descripcion !== undefined) proyecto.descripcion = req.body.descripcion;
+    if (req.body.categoria !== undefined) proyecto.categoria = req.body.categoria;
+    if (req.body.carrera !== undefined) proyecto.carrera = req.body.carrera;
+    if (req.body.nivel !== undefined) proyecto.nivel = req.body.nivel;
+    if (req.body.estado !== undefined) proyecto.estado = req.body.estado;
+    if (req.body.publico !== undefined) proyecto.publico = req.body.publico;
+    if (req.body.asignatura !== undefined) proyecto.asignatura = req.body.asignatura;
+    if (req.body.repositorio !== undefined) proyecto.repositorio = req.body.repositorio;
+    if (req.body.enlaceDemo !== undefined) proyecto.enlaceDemo = req.body.enlaceDemo;
+    
+    // Manejar fecha de inicio
+    if (req.body.fechaInicio !== undefined) {
+      proyecto.fechaInicio = new Date(req.body.fechaInicio);
+    }
+    
+    // Manejar tecnologías
+    if (req.body.tecnologias !== undefined) {
+      proyecto.tecnologias = req.body.tecnologias;
+    }
+    
+    // Manejar docente
+    if (req.body.docente !== undefined) {
+      proyecto.docente = req.body.docente;
+    }
 
     await proyecto.save();
+    
+    // Popular el autor para devolver datos completos
+    await proyecto.populate('autor', 'nombre email');
+    
     res.json(proyecto);
   } catch (error) {
     console.log(error);

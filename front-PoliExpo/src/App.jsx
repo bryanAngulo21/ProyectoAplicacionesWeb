@@ -34,6 +34,8 @@ import CrearProyecto from './pages/CrearProyecto';
 import ListarProyecto from './pages/ListarProyecto.jsx';
 import DetalleProyecto from './pages/DetalleProyecto';
 
+import EditarProyecto from './pages/EditarProyecto';
+
 
 
 function App() {
@@ -85,6 +87,7 @@ function App() {
                   <Route path='crear' element={<CrearProyecto />} />
                   <Route path='listar' element={<ListarProyecto />} />
                   <Route path='proyecto/:id' element={<DetalleProyecto />} />
+                  <Route path='actualizar/:id' element={<EditarProyecto />} />
 
                 </Route>
               </Routes>

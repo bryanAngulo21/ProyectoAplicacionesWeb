@@ -16,6 +16,8 @@ import { FaHeart, FaUserShield } from "react-icons/fa";
 
 import { FaSearch } from "react-icons/fa";
 
+
+
 const Dashboard = () => {
     const location = useLocation()
     const urlActual = location.pathname
@@ -325,7 +327,10 @@ const Dashboard = () => {
                     
                 </div>
 
+
+
             </div>
+            
 
     )
 }

@@ -2,7 +2,8 @@ import { Router } from "express";
 import { 
   donarPlataforma, 
   obtenerDonacionesEstudiante,
-  obtenerTodasDonaciones 
+  obtenerTodasDonaciones,
+  confirmarDonacion
 } from "../controllers/donacion_controller.js";
 import { verificarTokenJWT, verificarAdmin } from "../middlewares/JWT.js";
 
@@ -14,6 +15,9 @@ const router = Router();
 
 // Donar a la plataforma
 router.post("/donacion/registrar", verificarTokenJWT, donarPlataforma);
+
+// Confirmar donación pendiente
+router.post("/donacion/confirmar", verificarTokenJWT, confirmarDonacion);
 
 // Obtener donaciones del estudiante logueado
 router.get("/donaciones/mis-donaciones", verificarTokenJWT, obtenerDonacionesEstudiante);
