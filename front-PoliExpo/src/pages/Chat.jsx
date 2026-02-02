@@ -31,27 +31,24 @@ const Chat = () => {
         reset({ message: "" })
     }
 
-    useEffect(() => {
-  console.log("BACKEND URL:", import.meta.env.VITE_BACKEND_URL)
-
-  const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
-    withCredentials: true,
-  transports: ['websocket', 'polling']
-  })
-
-  setSocket(newSocket)
-
-  newSocket.on("connect", () => {
-    console.log("🟢 Socket conectado:", newSocket.id)
-  })
-
-  newSocket.on("enviar-mensaje-front-back", (payload) => {
-    setResponses((prev) => [...prev, payload])
-  })
-
-  return () => {
-    newSocket.disconnect()
-  }
+// En el useEffect del socket, cambia la URL:
+useEffect(() => {
+    const socketUrl = import.meta.env.MODE === 'development' 
+        ? "http://localhost:3000" 
+        : import.meta.env.VITE_SOCKET_URL || "https://poliexpoback.onrender.com"
+    
+    const newSocket = io(socketUrl, {
+        transports: ['websocket', 'polling'],
+        secure: true
+    })
+    
+    setSocket(newSocket)
+    newSocket.on("enviar-mensaje-front-back", (payload) => {
+        console.log(payload)
+        setResponses((prev) => [...prev, payload])
+    })
+    
+    return () => newSocket.disconnect()
 }, [])
 
 
