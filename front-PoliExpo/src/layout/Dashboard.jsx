@@ -8,7 +8,6 @@ import { CgProfile } from "react-icons/cg";
 
 import { MdOutlinePublish } from "react-icons/md";
 import { MdPublishedWithChanges } from "react-icons/md";
-import { VscOpenPreview } from "react-icons/vsc";
 import { FaRegComment } from "react-icons/fa";
 import { MdLogout } from 'react-icons/md';
 import { MdAdminPanelSettings, MdAttachMoney } from "react-icons/md";
@@ -29,6 +28,7 @@ const Dashboard = () => {
         <div className='md:flex md:min-h-screen bg-black text-white'>
 
                 {/* Menú lateral */}
+                {/* LOGO Y NOMBRE */}
 
                 <div className='md:w-1/5 bg-black px-5 py-6 shadow-lg'>
                     <div className="flex items-center gap-4">
@@ -47,6 +47,7 @@ const Dashboard = () => {
                 />
 
                 {/* Bienvenida */}
+                {/* IMAGEN */}
                 <p className='text-gray-300 text-center my-4 text-sm'>
                     <span className='bg-green-600 w-3 h-3 inline-block rounded-full mr-1'></span>
                     Bienvenido - {user?.nombre}
@@ -59,7 +60,7 @@ const Dashboard = () => {
                 <hr className="mt-5 border-gray-700" />
 
                 {/* Links */}
-                <ul className="mt-5 space-y-2">
+                <ul className="mt-5 space-y-2 list-none p-0">
 
                     <li>
                         <Link
@@ -140,7 +141,7 @@ const Dashboard = () => {
                         </Link>
                     </li>
 
-                </ul>
+                
 
             {/* MENÚ PARA ADMINISTRADOR */}
             {user?.rol === 'admin' && (
@@ -149,19 +150,6 @@ const Dashboard = () => {
                 <p className="text-xs uppercase text-gray-500 px-4 mb-2">Administración</p>
                 </li>
                 
-                <li>
-                <Link 
-                    to="/dashboard/admin"
-                    className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
-                    ${urlActual === '/dashboard/admin'
-                    ? 'bg-red-900 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-800'}
-                    `}
-                >
-                    <MdAdminPanelSettings />
-                    Panel Admin
-                </Link>
-                </li>
                 
                 <li>
                 <Link 
@@ -173,23 +161,37 @@ const Dashboard = () => {
                     `}
                 >
                     <MdAttachMoney />
-                    Gestión de Donaciones
+                    Ver Donaciones
                 </Link>
                 </li>
                 
                 <li>
-                <Link 
-                    to="/dashboard/usuarios"
-                    className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
-                    ${urlActual === '/dashboard/usuarios'
-                    ? 'bg-red-900 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-800'}
-                    `}
-                >
-                    <FaUserShield />
-                    Gestión de Usuarios
-                </Link>
-                </li>
+                    <Link 
+                        to="/dashboard/usuarios"
+                        className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
+                        ${urlActual === '/dashboard/usuarios'
+                        ? 'bg-red-900 text-white'
+                        : 'text-gray-400 hover:text-white hover:bg-gray-800'}
+                        `}
+                    >
+                        <FaUserShield />
+                        Gestión de Usuarios
+                    </Link>
+                    </li>
+                    
+                    <li>
+                    <Link 
+                        to="/dashboard/publicaciones"
+                        className={`flex items-center gap-2 text-lg font-medium px-4 py-2 rounded-md transition
+                        ${urlActual === '/dashboard/publicaciones'
+                        ? 'bg-red-900 text-white'
+                        : 'text-gray-400 hover:text-white hover:bg-gray-800'}
+                        `}
+                    >
+                        <MdAdminPanelSettings />
+                        Gestión de Proyectos
+                    </Link>
+                    </li>
             </>
             )}
 
@@ -197,6 +199,7 @@ const Dashboard = () => {
             
             {user?.rol === 'estudiante' && (
             <>
+ {/*
             <li>
                         <Link 
                             to='/dashboard/list'
@@ -225,7 +228,7 @@ const Dashboard = () => {
                             Publicar
                         </Link>
                     </li>
-
+*/}
                     <li>
                     <Link 
                         to="/dashboard/crear"
@@ -235,7 +238,7 @@ const Dashboard = () => {
                         : 'text-gray-400 hover:text-white hover:bg-gray-800'}
                         `}
                     >
-                        <span>📝</span>
+                        <MdOutlinePublish />
                         Crear Proyecto
                     </Link>
                     </li>
@@ -249,7 +252,7 @@ const Dashboard = () => {
                         : 'text-gray-400 hover:text-white hover:bg-gray-800'}
                         `}
                     >
-                        <span>📋</span>
+                        <MdPublishedWithChanges />
                         Mis Proyectos
                     </Link>
                     </li>
@@ -273,12 +276,12 @@ const Dashboard = () => {
                 </li>
             </>
             )}
-                    
+                 </ul>   
                 </div>
 
 
                 {/* Panel derecho */}
-                <div className='flex-1 flex flex-col justify-between h-screen bg-white text-black'>
+                <div className='flex-1 flex flex-col bg-white text-black'>
 
                     {/* Barra superior */}
                         <div className="bg-gradient-to-r from-gray-900 via-black to-gray-800 backdrop-blur-md py-3 px-6 flex items-center justify-center md:justify-end gap-6 shadow-md">
@@ -313,16 +316,16 @@ const Dashboard = () => {
                         </div>
 
                     {/* Contenido */}
-                    <div className='overflow-y-scroll p-8'>
+                    <div className='flex-1 overflow-y-auto p-8'>
                         <Outlet />
                     </div>
 
                     {/* Footer */}
-                    <div className='bg-black h-12'>
-                        <p className='text-center text-white leading-[3rem] font-light'>
-                            PoliExpo - Todos los derechos reservados
-                        </p>
-                    </div>
+                    <footer className="bg-black h-12 flex items-center justify-center">
+                    <p className="text-white font-light">
+                        PoliExpo - Todos los derechos reservados
+                    </p>
+                    </footer>
 
                     
                 </div>

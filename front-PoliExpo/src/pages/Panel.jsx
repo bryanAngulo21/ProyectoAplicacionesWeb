@@ -67,19 +67,7 @@ const Panel = () => {
         </h1>
         <hr className='my-4 border-t-2 border-gray-300' />
         
-        <div className="flex items-center gap-4 mb-4">
-          <div className="bg-gray-100 px-4 py-2 rounded-lg">
-            <p className="text-sm text-gray-600">Bienvenido</p>
-            <p className="font-semibold">{user?.nombre} {user?.apellido}</p>
-          </div>
-          
-          <div className={`px-4 py-2 rounded-lg ${isAdmin ? 'bg-red-100' : 'bg-blue-100'}`}>
-            <p className="text-sm">Rol:</p>
-            <p className={`font-semibold ${isAdmin ? 'text-red-800' : 'text-blue-800'}`}>
-              {rol}
-            </p>
-          </div>
-        </div>
+       
       </div>
 
       {/* ESTADÍSTICAS PRINCIPALES */}
@@ -168,63 +156,7 @@ const Panel = () => {
         </div>
       </div>
 
-      {/* ACCIONES RÁPIDAS */}
-      <div className="mb-10">
-        <h2 className='font-bold text-2xl text-gray-700 mb-4'>Acciones Rápidas</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Crear Proyecto - Para todos */}
-          <Link
-            to="/dashboard/create"
-            className="bg-gray-800 border border-gray-700 p-6 rounded-lg hover:bg-gray-700 transition text-center"
-          >
-            <div className="text-white">
-              <span className="text-3xl block mb-3">📝</span>
-              <h3 className="font-semibold text-lg mb-2">Crear Proyecto</h3>
-              <p className="text-gray-300 text-sm">Comparte tu trabajo académico</p>
-            </div>
-          </Link>
-
-          {/* Mis Publicaciones - Para todos */}
-          <Link
-            to="/dashboard/list"
-            className="bg-gray-800 border border-gray-700 p-6 rounded-lg hover:bg-gray-700 transition text-center"
-          >
-            <div className="text-white">
-              <span className="text-3xl block mb-3">📋</span>
-              <h3 className="font-semibold text-lg mb-2">Mis Publicaciones</h3>
-              <p className="text-gray-300 text-sm">Gestiona tus proyectos</p>
-            </div>
-          </Link>
-
-          {/* Acción específica por rol */}
-          {isAdmin ? (
-            <Link
-              to="#"
-              className="bg-red-800 border border-red-700 p-6 rounded-lg hover:bg-red-700 transition text-center"
-              onClick={() => toast.info('Funcionalidad de administrador')}
-            >
-              <div className="text-white">
-                <span className="text-3xl block mb-3">⚙️</span>
-                <h3 className="font-semibold text-lg mb-2">Panel Admin</h3>
-                <p className="text-red-200 text-sm">Gestionar sistema</p>
-              </div>
-            </Link>
-          ) : (
-            <Link
-              to="#"
-              className="bg-blue-800 border border-blue-700 p-6 rounded-lg hover:bg-blue-700 transition text-center"
-              onClick={() => toast.info('Funcionalidad de estudiante')}
-            >
-              <div className="text-white">
-                <span className="text-3xl block mb-3">🔍</span>
-                <h3 className="font-semibold text-lg mb-2">Explorar</h3>
-                <p className="text-blue-200 text-sm">Ver proyectos</p>
-              </div>
-            </Link>
-          )}
-        </div>
-      </div>
+      
 
       {/* PROYECTOS RECIENTES */}
       <div className="mb-8">
@@ -233,7 +165,7 @@ const Panel = () => {
             {isAdmin ? 'Proyectos Recientes' : 'Proyectos Destacados'}
           </h2>
           <Link 
-            to={isAdmin ? "#" : "/dashboard/explorar"} 
+            to={isAdmin ? "/dashboard/explorar" : "/dashboard/explorar"} 
             className="text-gray-600 hover:text-gray-800"
           >
             Ver todos →
@@ -284,10 +216,10 @@ const Panel = () => {
 
       {/* SECCIÓN ESPECÍFICA PARA ADMIN */}
       {isAdmin && stats?.ultimasDonaciones?.length > 0 && (
+        
         <div className="bg-white border border-gray-200 p-6 rounded-lg">
-          <h2 className='font-bold text-xl text-gray-700 mb-4'>Donaciones Recientes</h2>
-          
-          <div className="space-y-4">
+          <div className="mb-10">
+        <h2 className='font-bold text-2xl text-gray-700 mb-4'>Resumen</h2>
             {stats.ultimasDonaciones.slice(0, 3).map((donacion) => (
               <div key={donacion._id} className="border-b pb-3 last:border-0">
                 <div className="flex justify-between items-start">

@@ -74,6 +74,11 @@ export const authService = {
   
   // Confirmar email
   confirmEmail: (token) => api.get(`/confirmar/${token}`),
+
+  // Nuevas funciones para admin
+  getAllUsers: () => api.get('/usuarios/todos'),
+  getUserById: (id) => api.get(`/usuarios/${id}`),
+  deleteUser: (id) => api.delete(`/usuarios/eliminar/${id}`),
 };
 
 /* =========================

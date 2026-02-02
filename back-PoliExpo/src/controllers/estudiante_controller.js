@@ -233,6 +233,74 @@ const actualizarPassword = async (req,res)=>{
     }
 }
 
+// PARA USER ADMIN
+
+// 1. Listar todos los usuarios (para admin)
+const listarTodosUsuarios = async (req, res) => {
+  try {
+    const usuarios = await Estudiante.find()
+      .select('-password -token')  // No enviar datos sensibles
+      .sort({ createdAt: -1 });
+    
+    res.status(200).json({
+      msg: "Usuarios obtenidos",
+      data: usuarios
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Error al obtener usuarios" });
+  }
+}
+
+// 2. Eliminar usuario (para admin)
+const eliminarUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Verificar que el usuario existe
+    const usuario = await Estudiante.findById(id);
+    if (!usuario) {
+      return res.status(404).json({ msg: "Usuario no encontrado" });
+    }
+    
+    /// Eliminar el usuario
+    await usuario.deleteOne();
+    
+    res.status(200).json({ 
+      msg: "Usuario eliminado correctamente",
+      usuarioId: id
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Error al eliminar usuario" });
+  }
+}
+
+
+// 3. Ver detalles de usuario (para admin)
+const verDetallesUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const usuario = await Estudiante.findById(id)
+      .select('-password -token');  // No enviar datos sensibles
+    
+    if (!usuario) {
+      return res.status(404).json({ msg: "Usuario no encontrado" });
+    }
+    
+    res.status(200).json({
+      msg: "Detalles del usuario obtenidos",
+      data: usuario
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Error al obtener detalles del usuario" });
+  }
+};
+
 export {
     registro,
     confirmarMail,
@@ -243,5 +311,8 @@ export {
     googleCallback,
     perfil,
     actualizarPerfil,
-    actualizarPassword
+    actualizarPassword,
+    listarTodosUsuarios,
+    eliminarUsuario,
+    verDetallesUsuario
 }

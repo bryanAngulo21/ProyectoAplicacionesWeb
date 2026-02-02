@@ -88,28 +88,28 @@ const DonacionesAdmin = () => {
   return (
     <div className="p-6">
       <h1 className='font-black text-3xl md:text-4xl text-gray-800 mb-2'>
-        Gestión de Donaciones
+        Reportes de Donaciones
       </h1>
       <div className="w-20 h-1 bg-red-600 mb-6"></div>
       <p className='mb-8 text-gray-600'>
-        Administra todas las donaciones recibidas en la plataforma
+        Vizualiza todas las donaciones recibidas en la plataforma
       </p>
 
       {/* Resumen */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl">
+        <div className="bg-gradient-to-r from-red-600 to-red-800 text-white p-6 rounded-xl">
           <h3 className="text-lg font-semibold mb-2">Total Donaciones</h3>
           <p className="text-3xl font-bold">{stats.total}</p>
           <p className="text-sm opacity-90 mt-2">Transacciones registradas</p>
         </div>
 
-        <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl">
+        <div className="bg-gradient-to-r from-gray-600 to-gray-800 text-white p-6 rounded-xl">
           <h3 className="text-lg font-semibold mb-2">Monto Total</h3>
           <p className="text-3xl font-bold">${stats.montoTotal.toFixed(2)}</p>
           <p className="text-sm opacity-90 mt-2">USD recaudados</p>
         </div>
 
-        <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl">
+        <div className="bg-gradient-to-r from-red-600 to-red-800 text-white p-6 rounded-xl">
           <h3 className="text-lg font-semibold mb-2">Donaciones Exitosas</h3>
           <p className="text-3xl font-bold">{stats.exitosas}</p>
           <p className="text-sm opacity-90 mt-2">Transacciones completadas</p>
@@ -137,16 +137,7 @@ const DonacionesAdmin = () => {
               Actualizar
             </button>
             
-            <button
-              onClick={exportToCSV}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2"
-              disabled={donaciones.length === 0}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Exportar CSV
-            </button>
+            
           </div>
         </div>
 

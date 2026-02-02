@@ -36,6 +36,9 @@ import DetalleProyecto from './pages/DetalleProyecto';
 
 import EditarProyecto from './pages/EditarProyecto';
 
+import AdminUsuarios from './pages/AdminUsuarios';
+import AdminPublicaciones from './pages/AdminPublicaciones';
+import DetalleUsuario from './pages/DetalleUsuario';
 
 
 function App() {
@@ -88,6 +91,11 @@ function App() {
                   <Route path='listar' element={<ListarProyecto />} />
                   <Route path='proyecto/:id' element={<DetalleProyecto />} />
                   <Route path='actualizar/:id' element={<EditarProyecto />} />
+
+                  <Route path='usuarios' element={<AdminUsuarios />} />
+                  <Route path='usuario/:id' element={<DetalleUsuario />} /> 
+                  <Route path='publicaciones' element={<AdminPublicaciones />} />
+              
 
                 </Route>
               </Routes>

@@ -17,7 +17,7 @@ export const CardProfile = () => {
                             alt="Perfil"
                             className="rounded-full border-2 border-gray-300 shadow-sm w-32 h-32 object-cover"
                         />
-
+{/*
                         <label
                             className="absolute bottom-1 right-1 bg-blue-500 text-white 
                                        rounded-full p-2 cursor-pointer hover:bg-blue-600 
@@ -26,6 +26,7 @@ export const CardProfile = () => {
                             📷
                             <input type="file" accept="image/*" className="hidden" />
                         </label>
+                        */}
                     </div>
                 </div>
 

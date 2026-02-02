@@ -8,6 +8,8 @@ import {
   useStripe,
   useElements
 } from '@stripe/react-stripe-js';
+import logoPoliExpo from '../../assets/logo-PoliExpo3.png'
+
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY|| 
   'pk_test_51SrNzYIbKaYC42xVfcEG2Rn7qwTxEAKdCWo6yr4wcYJBoAhIWIexBRxMqrrQzrGBh1AuDYmSPYrULLOEBl2IfHXY00UpksWlSi');
@@ -294,21 +296,22 @@ const DonacionForm = ({ onDonationSuccess, onClose }) => {
   return (
     <Elements stripe={stripePromise}>
       <div className="bg-white rounded-xl shadow-lg p-6 max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <div className="inline-block bg-gradient-to-r from-red-500 to-red-600 p-4 rounded-full mb-4">
-            <span className="text-4xl text-white">💝</span>
+        <div className="text-center mb-8 flex flex-col items-center">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <img
+                src={logoPoliExpo}
+                alt="logo"
+                className="w-20 h-20"
+              />
+              <h1 className="text-2xl md:text-3xl font-extrabold text-black">
+                Apoya a <span className="text-red-800">Poli</span>Expo
+              </h1>
+            </div>
+
+            <p className="text-gray-600 max-w-lg">
+              Tu donación ayuda a mantener la plataforma activa y apoyar a más estudiantes.
+            </p>
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
-            Apoya a PoliExpo
-          </h2>
-          <p className="text-gray-600 max-w-lg mx-auto">
-            Tu donación ayuda a mantener la plataforma activa y apoyar a más estudiantes.
-          </p>
-          
-          <div className="inline-block mt-3 bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full">
-            Modo Prueba de Stripe
-          </div>
-        </div>
 
         <StripeDonationForm 
           onDonationSuccess={onDonationSuccess} 

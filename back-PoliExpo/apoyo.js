@@ -1,43 +1,31 @@
-// En tu archivo de servicios (api.js o similar)
-import axios from 'axios';
+import app from './server.js'
+import connection from './database.js'
+import http from 'http'
+import { Server } from 'socket.io'
+import dotenv from 'dotenv'
 
-// Configurar axios base
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:4000/api';
+dotenv.config()
 
-// Interceptor para agregar token
-axios.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+connection()
+
+const server = http.createServer(app)
+
+const io = new Server(server, {
+    cors: {
+        origin: process.env.URL_FRONTEND,
+        methods: ["GET", "POST"],
+        credentials: true
     }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+})
 
-export const donacionService = {
-  // Donar a la plataforma
-  donateToPlatform: (data) => {
-    return axios.post('/donacion/registrar', data);
-  },
-  
-  // Confirmar donación
-  confirmDonation: (data) => {
-    return axios.post('/donacion/confirmar', data);
-  },
-  
-  // Obtener mis donaciones
-  getMyDonations: () => {
-    return axios.get('/donaciones/mis-donaciones');
-  },
-  
-  // Obtener todas las donaciones (admin)
-  getAllDonations: () => {
-    return axios.get('/donaciones/todas');
-  }
-};
+io.on('connection', (socket) => {
+    console.log('Usuario conectado', socket.id)
 
-export default axios;
+    socket.on('enviar-mensaje-front-back', (payload) => {
+        socket.broadcast.emit('enviar-mensaje-front-back', payload)
+    })
+})
+
+server.listen(app.get('port'), () => {
+    console.log(`Server ok on ${process.env.URL_FRONTEND}`)
+})

@@ -9,9 +9,12 @@ import {
   perfil, 
   recuperarPassword, 
   registro,
-  googleCallback  
+  googleCallback  ,
+  listarTodosUsuarios,  
+  verDetallesUsuario,
+  eliminarUsuario
 } from '../controllers/estudiante_controller.js'
-import { verificarTokenJWT } from '../middlewares/JWT.js'
+import { verificarTokenJWT, verificarAdmin }from '../middlewares/JWT.js'
 import passport from 'passport'
 
 const router = Router()
@@ -71,5 +74,16 @@ router.put('/actualizarperfil/:id', verificarTokenJWT, actualizarPerfil)
 
 // Actualizar contraseña
 router.put('/actualizarpassword/:id', verificarTokenJWT, actualizarPassword)
+
+// ===== RUTAS PARA ADMIN =====
+
+// Obtener todos los usuarios
+router.get('/usuarios/todos', verificarTokenJWT, verificarAdmin, listarTodosUsuarios)
+
+// Ver detalles de usuario específico
+router.get('/usuarios/:id', verificarTokenJWT, verificarAdmin, verDetallesUsuario) 
+
+// Eliminar usuario
+router.delete('/usuarios/eliminar/:id', verificarTokenJWT, verificarAdmin, eliminarUsuario)
 
 export default router

@@ -19,25 +19,21 @@ const DonacionPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8 px-4">
+    <div className="min-h-screen py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className='font-black text-4xl md:text-5xl text-gray-800 mb-4'>
-            Apoya a PoliExpo
-          </h1>
-          <div className="w-24 h-1 bg-gradient-to-r from-red-500 to-red-600 mx-auto mb-6"></div>
-          <p className='text-lg text-gray-600 max-w-2xl mx-auto mb-8'>
-            Tu donación ayuda a mantener y mejorar la plataforma para todos los estudiantes, 
-            permitiéndonos agregar nuevas funcionalidades y mantener los servidores activos.
-          </p>
-          
+        <h1 className='font-black text-4xl text-gray-500'>
+          Apoya a PoliExpo
+        </h1>
+        <hr className='my-4 border-t-2 border-gray-300' />
+       
 
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="flex justify-center">
+          <div className="w-full max-w-2xl">
           {/* Formulario de donación */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-gray-200">
+            <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm">
+              <h2 className="text-xl font-bold text-gray-800 mb-6">
+                Realizar Donación
+              </h2>
               <DonacionForm 
                 onDonationSuccess={handleDonationSuccess}
                 onClose={handleClose}
@@ -49,9 +45,8 @@ const DonacionPage = () => {
         </div>
 
         {/* Pie de página */}
-        <div className="mt-12 pt-8 border-t border-gray-200 text-center">
-          
-          <p className="text-xs text-gray-400 mt-2">
+        <div className="mt-8 pt-8 border-t border-gray-200 text-center">
+          <p className="text-sm text-gray-400">
             PoliExpo es una plataforma sin fines de lucro. Todas las donaciones se destinan íntegramente al mantenimiento y mejora de la plataforma.
           </p>
         </div>
