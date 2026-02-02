@@ -25,16 +25,20 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
-// Interceptor para manejar respuestas de error
+/// Interceptor para manejar respuestas de error
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     // Si el token expiró o no es válido
     if (error.response?.status === 401) {
-      // Puedes redirigir al login o limpiar el storage aquí
-      localStorage.removeItem('auth-token');
-      window.location.href = '/login';
+      // Para login, no redirigir automáticamente
+      if (!error.config.url.includes('/login')) {
+        localStorage.removeItem('auth-token');
+        window.location.href = '/login';
+      }
     }
+    
+    // Propagar el error para que pueda ser manejado en el componente
     return Promise.reject(error);
   }
 );

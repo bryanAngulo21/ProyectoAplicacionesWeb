@@ -32,14 +32,26 @@ const Chat = () => {
     }
 
     useEffect(() => {
-        const newSocket = io("http://localhost:3000")
-        setSocket(newSocket)
-        newSocket.on("enviar-mensaje-front-back", (payload) => {
-            console.log(payload)
-            setResponses((prev) => [...prev, payload])
-        })
-        return () => newSocket.disconnect()
-    }, [])
+  console.log("BACKEND URL:", import.meta.env.VITE_BACKEND_URL)
+
+  const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
+    withCredentials: true,
+  })
+
+  setSocket(newSocket)
+
+  newSocket.on("connect", () => {
+    console.log("🟢 Socket conectado:", newSocket.id)
+  })
+
+  newSocket.on("enviar-mensaje-front-back", (payload) => {
+    setResponses((prev) => [...prev, payload])
+  })
+
+  return () => {
+    newSocket.disconnect()
+  }
+}, [])
 
 
     return (

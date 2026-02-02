@@ -27,45 +27,33 @@ const Login = () => {
     const { setToken, setRol } = storeAuth()
 
     // Login tradicional
-    const loginUser = async (dataForm) => {
+     const loginUser = async (dataForm) => {
         setLoading(true);
-        try {
-            const response = await authService.login(dataForm.email, dataForm.password);
-            
+        
+        // Usar tu hook useFetch (ya tienes declarado fetchDataBackend arriba)
+        const url = `${import.meta.env.VITE_BACKEND_URL}/login`;
+        const response = await fetchDataBackend(url, dataForm, 'POST');
+        
+        if (response) {
             // Almacenar token y rol
-            setToken(response.data.token);
-            setRol(response.data.rol);
+            setToken(response.token);
+            setRol(response.rol);
             
             // Guardar datos adicionales en localStorage si es necesario
             localStorage.setItem('userData', JSON.stringify({
-                nombre: response.data.nombre,
-                apellido: response.data.apellido,
-                email: response.data.email,
-                rol: response.data.rol,
-                fotoPerfil: response.data.fotoPerfil,
-                _id: response.data._id
+                nombre: response.nombre,
+                apellido: response.apellido,
+                email: response.email,
+                rol: response.rol,
+                fotoPerfil: response.fotoPerfil,
+                _id: response._id
             }));
             
             // Redirigir al dashboard
             navigate('/dashboard');
-            
-        } catch (error) {
-        console.error('Error en login:', error);
+        }
         
-        // Mostrar mensaje de error específico
-        if (error.response?.data?.msg) {
-            toast.error(error.response.data.msg);
-        } else if (error.response?.status === 401) {
-            toast.error('Credenciales incorrectas');
-        } else if (error.response?.status === 404) {
-            toast.error('Usuario no encontrado');
-        } else {
-            toast.error('Error al iniciar sesión');
-        }
-            
-        } finally {
-            setLoading(false);
-        }
+        setLoading(false);
     }
 
     // Login con Google
