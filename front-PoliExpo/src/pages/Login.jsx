@@ -50,8 +50,19 @@ const Login = () => {
             navigate('/dashboard');
             
         } catch (error) {
-            console.error('Error en login:', error);
-            // Tu hook useFetch ya maneja los errores con toast
+        console.error('Error en login:', error);
+        
+        // Mostrar mensaje de error específico
+        if (error.response?.data?.msg) {
+            toast.error(error.response.data.msg);
+        } else if (error.response?.status === 401) {
+            toast.error('Credenciales incorrectas');
+        } else if (error.response?.status === 404) {
+            toast.error('Usuario no encontrado');
+        } else {
+            toast.error('Error al iniciar sesión');
+        }
+            
         } finally {
             setLoading(false);
         }
