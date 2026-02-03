@@ -40,11 +40,17 @@ router.post('/login', login)
 // Iniciar autenticación con Google
 router.get(
   '/auth/google',
+  (req, res, next) => {
+    // Guardar URL de retorno en la sesión
+    const redirectUrl = req.query.redirect_uri || process.env.URL_FRONTEND;
+    req.session.oauth2return = redirectUrl;
+    next();
+  },
   passport.authenticate('google', {
     scope: ['profile', 'email'],
     session: false
   })
-)
+);
 
 // Callback de Google - debe coincidir con callbackURL en passport.js
 router.get(

@@ -139,36 +139,42 @@ const login = async(req,res)=>{
 
 // Login/Registro con Google (desde passport callback)
 const googleCallback = async (req, res) => {
-    try {
-        if (!req.user) {
-            return res.status(400).json({ msg: "Error en autenticación con Google" });
-        }
-
-        const estudiante = req.user;
-        
-        // Actualizar último login
-        if (estudiante.updateLastLogin) {
-            await estudiante.updateLastLogin();
-        }
-// Crear token JWT
-        const token = crearTokenJWT(estudiante._id, estudiante.rol);
-
-        res.status(200).json({
-            msg: "Autenticación con Google exitosa",
-            token,
-            rol: estudiante.rol,
-            nombre: estudiante.nombre,
-            apellido: estudiante.apellido,
-            email: estudiante.email,
-            fotoPerfil: estudiante.fotoPerfil,
-            authProvider: estudiante.authProvider,
-            _id: estudiante._id
-        });
-
-    } catch (error) {
-        console.error("❌ Error en callback Google:", error);
-        res.status(500).json({ msg: "Error en autenticación con Google" });
+  try {
+    if (!req.user) {
+      return res.redirect(`${process.env.URL_FRONTEND}/login?error=google_auth_failed`);
     }
+
+    const estudiante = req.user;
+    
+    if (estudiante.updateLastLogin) {
+      await estudiante.updateLastLogin();
+    }
+
+    const token = crearTokenJWT(estudiante._id, estudiante.rol);
+
+    // URL de retorno (por defecto al frontend)
+    const returnUrl = req.session.oauth2return || process.env.URL_FRONTEND;
+    
+    // Crear URL con los datos en fragmento (no se envía al servidor)
+    const redirectUrl = new URL(`${returnUrl}/google-callback`);
+    
+    // Los datos van en el fragmento (después del #)
+    const fragmentData = {
+      token: token,
+      rol: estudiante.rol,
+      nombre: estudiante.nombre,
+      email: estudiante.email,
+      _id: estudiante._id.toString()
+    };
+    
+    redirectUrl.hash = `#google-auth-${btoa(JSON.stringify(fragmentData))}`;
+    
+    res.redirect(redirectUrl.toString());
+
+  } catch (error) {
+    console.error("❌ Error en callback Google:", error);
+    res.redirect(`${process.env.URL_FRONTEND}/login?error=google_auth_failed`);
+  }
 };
 
 const perfil =(req,res)=>{

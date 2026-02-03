@@ -11,8 +11,9 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: `${process.env.URL_BACKEND}/auth/google/callback`,
+      passReqToCallback: true  
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (req, accessToken, refreshToken, profile, done) => {
       try {
         // Buscar por googleId
         let estudiante = await Estudiante.findOne({ googleId: profile.id });
@@ -50,6 +51,9 @@ passport.use(
         
         await nuevoEstudiante.save();
         done(null, nuevoEstudiante);
+        console.log('🔍 Callback URL configurada:', `${process.env.URL_BACKEND}/auth/google/callback`);
+        console.log('🔍 URL_BACKEND:', process.env.URL_BACKEND);
+
       } catch (error) {
         done(error, null);
       }
