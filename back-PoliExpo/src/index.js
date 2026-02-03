@@ -20,7 +20,7 @@ const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
         origin: process.env.NODE_ENV === 'production' 
-            ? ["https://poli-expo.netlify.app", "https://poliexpoback.onrender.com/"]
+            ? ["https://poli-expo.netlify.app", "https://poliexpoback.onrender.com"]
             : "http://localhost:5173",
         credentials: true
     }

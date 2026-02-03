@@ -51,8 +51,9 @@ passport.use(
         
         await nuevoEstudiante.save();
         done(null, nuevoEstudiante);
-        console.log('🔍 Callback URL configurada:', `${process.env.URL_BACKEND}/auth/google/callback`);
-        console.log('🔍 URL_BACKEND:', process.env.URL_BACKEND);
+        console.log('🌐 ENTORNO:', process.env.NODE_ENV);
+console.log('🔗 URL_BACKEND:', process.env.URL_BACKEND);
+console.log('🔄 Callback URL:', `${process.env.URL_BACKEND}/auth/google/callback`);
 
       } catch (error) {
         done(error, null);
