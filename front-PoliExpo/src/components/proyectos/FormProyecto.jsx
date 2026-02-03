@@ -4,13 +4,31 @@ import { useForm } from 'react-hook-form';
 import { toast, ToastContainer } from 'react-toastify';
 import { proyectoService, iaService } from '../../services/api';
 import storeProyectos from '../../context/storeProyectos';
-
+import {
+  FaFileAlt,
+  FaLightbulb,
+  FaRobot,
+  FaTools,
+  FaGraduationCap,
+  FaUserTie,
+  FaCalendarAlt,
+  FaLink,
+  FaGlobe,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaSpinner,
+  FaArrowLeft,
+  FaGithub,
+  FaRocket,
+  FaInfoCircle,
+  FaExclamationTriangle
+} from 'react-icons/fa';
 
 const FormProyecto = ({ modo = 'crear' }) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-const actualizarProyectoStore = storeProyectos(
+  const actualizarProyectoStore = storeProyectos(
     (state) => state.actualizarProyecto
   );
 
@@ -47,8 +65,7 @@ const actualizarProyectoStore = storeProyectos(
     }
   });
 
-  // Cargar datos del proyecto si estamos en modo edición
- // =============================
+  // =============================
   // CARGAR PROYECTO PARA EDITAR
   // =============================
   useEffect(() => {
@@ -65,7 +82,6 @@ const actualizarProyectoStore = storeProyectos(
       if (!proyecto) throw new Error('Proyecto no encontrado');
 
       setTecnologias(proyecto.tecnologias || []);
-
       
       // Preparar datos para el formulario
       reset({
@@ -137,9 +153,8 @@ const actualizarProyectoStore = storeProyectos(
 
   // Seleccionar sugerencia de IA
   const seleccionarSugerencia = (titulo) => {
-    setValue('titulo', titulo, { shouldValidate: true });
-    setMostrarIA(false);
-    toast.success('Título seleccionado');
+    setValue('titulo', titulo);
+    toast.info('Título actualizado');
   };
 
   // Enviar formulario - VERSIÓN SIMPLIFICADA Y FUNCIONAL
@@ -162,9 +177,10 @@ const actualizarProyectoStore = storeProyectos(
         } : undefined
       };
 
-       if (modo === 'crear') {
-        await proyectoService.create(proyectoData);
+      if (modo === 'crear') {
+        const response = await proyectoService.create(proyectoData);
         toast.success('Proyecto creado exitosamente');
+        navigate('/dashboard/listar');
       } else {
         const response = await proyectoService.update(id, proyectoData);
 
@@ -172,9 +188,8 @@ const actualizarProyectoStore = storeProyectos(
         actualizarProyectoStore(response.data);
 
         toast.success('Proyecto actualizado exitosamente');
+        navigate('/dashboard/listar');
       }
-
-      navigate('/dashboard/listar');
     } catch (error) {
       console.error(error);
       toast.error(
@@ -182,7 +197,6 @@ const actualizarProyectoStore = storeProyectos(
         `Error al ${modo === 'crear' ? 'crear' : 'actualizar'} el proyecto`
       );
     } finally {
-      // bug real corregido
       setLoading(false);
     }
   };
@@ -204,7 +218,8 @@ const actualizarProyectoStore = storeProyectos(
     <div>
       <ToastContainer />
       
-      <h1 className='font-black text-4xl text-gray-500'>
+      <h1 className='font-black text-4xl text-gray-500 flex items-center gap-2'>
+        
         {modo === 'crear' ? 'Crear Nuevo Proyecto' : 'Editar Proyecto'}
       </h1>
       <hr className='my-4 border-t-2 border-gray-300' />
@@ -218,7 +233,9 @@ const actualizarProyectoStore = storeProyectos(
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         {/* SECCIÓN 1: INFORMACIÓN BÁSICA */}
         <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-bold text-gray-800 mb-6">📝 Información Básica</h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <FaFileAlt /> Información Básica
+          </h2>
           
           {/* Título del proyecto */}
           <div className="mb-6">
@@ -229,9 +246,17 @@ const actualizarProyectoStore = storeProyectos(
               <button
                 type="button"
                 onClick={() => setMostrarIA(!mostrarIA)}
-                className="text-sm text-blue-600 hover:text-blue-800"
+                className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
               >
-                {mostrarIA ? 'Ocultar IA' : '💡 Sugerencias con IA'}
+                {mostrarIA ? (
+                  <>
+                    <FaTimesCircle /> Ocultar IA
+                  </>
+                ) : (
+                  <>
+                    <FaLightbulb /> Sugerencias con IA
+                  </>
+                )}
               </button>
             </div>
             
@@ -253,14 +278,22 @@ const actualizarProyectoStore = storeProyectos(
           {mostrarIA && (
             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="font-semibold text-blue-800">🤖 Sugerencias de IA</h3>
+                <h3 className="font-semibold text-blue-800 flex items-center gap-2">
+                  <FaRobot /> Sugerencias de IA
+                </h3>
                 <button
                   type="button"
                   onClick={generarSugerenciasIA}
                   disabled={generandoSugerencias}
-                  className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:opacity-50"
+                  className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
                 >
-                  {generandoSugerencias ? 'Generando...' : 'Generar sugerencias'}
+                  {generandoSugerencias ? (
+                    <>
+                      <FaSpinner className="animate-spin" /> Generando...
+                    </>
+                  ) : (
+                    'Generar sugerencias'
+                  )}
                 </button>
               </div>
               
@@ -273,13 +306,15 @@ const actualizarProyectoStore = storeProyectos(
                       onClick={() => seleccionarSugerencia(titulo)}
                     >
                       <p className="text-gray-800">{titulo}</p>
-                      <p className="text-xs text-blue-600 mt-1">Haz clic para usar este título</p>
+                      <p className="text-xs text-blue-600 mt-1 flex items-center gap-1">
+                        <FaCheckCircle /> Haz clic para usar este título
+                      </p>
                     </div>
                   ))}
                 </div>
               ) : (
-                 <p className="text-blue-700 text-sm">
-                  Escribe una descripción y haz clic en "Generar sugerencias"
+                 <p className="text-blue-700 text-sm flex items-center gap-2">
+                  <FaInfoCircle /> Escribe una descripción y haz clic en "Generar sugerencias"
                 </p>
               )}
             </div>
@@ -336,7 +371,9 @@ const actualizarProyectoStore = storeProyectos(
 
         {/* SECCIÓN 2: TECNOLOGÍAS */}
         <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-bold text-gray-800 mb-6">🛠️ Tecnologías Utilizadas</h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <FaTools /> Tecnologías Utilizadas
+          </h2>
           
           <div className="mb-4">
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -354,7 +391,7 @@ const actualizarProyectoStore = storeProyectos(
               <button
                 type="button"
                 onClick={agregarTecnologia}
-                className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg"
+                className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
               >
                 Agregar
               </button>
@@ -377,7 +414,7 @@ const actualizarProyectoStore = storeProyectos(
                       onClick={() => eliminarTecnologia(index)}
                       className="text-red-500 hover:text-red-700"
                     >
-                      ×
+                      <FaTimesCircle />
                     </button>
                   </div>
                 ))}
@@ -385,8 +422,8 @@ const actualizarProyectoStore = storeProyectos(
             </div>
           ) : (
             <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-yellow-700 text-sm">
-                ⚠️ Debes agregar al menos una tecnología utilizada en el proyecto
+              <p className="text-yellow-700 text-sm flex items-center gap-2">
+                <FaExclamationTriangle /> Debes agregar al menos una tecnología utilizada en el proyecto
               </p>
             </div>
           )}
@@ -394,7 +431,9 @@ const actualizarProyectoStore = storeProyectos(
 
         {/* SECCIÓN 3: INFORMACIÓN ACADÉMICA */}
         <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-bold text-gray-800 mb-6">🎓 Información Académica</h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <FaGraduationCap /> Información Académica
+          </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
@@ -403,7 +442,7 @@ const actualizarProyectoStore = storeProyectos(
               </label>
               <input
                 type="text"
-                placeholder="Ej: Ingeniería en Sistemas"
+                placeholder="Ej: Desarrollo de Software"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-400"
                 {...register("carrera", { required: "La carrera es obligatoria" })}
               />
@@ -414,14 +453,14 @@ const actualizarProyectoStore = storeProyectos(
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Nivel / Semestre *
+                Semestre *
               </label>
               <select
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-400"
                 {...register("nivel", { required: true })}
               >
                 {[1, 2, 3, 4, 5, 6].map((n) => (
-                  <option key={n} value={n}>Nivel {n}</option>
+                  <option key={n} value={n}> {n}</option>
                 ))}
               </select>
             </div>
@@ -434,7 +473,7 @@ const actualizarProyectoStore = storeProyectos(
               </label>
               <input
                 type="text"
-                placeholder="Ej: Desarrollo Web, Base de Datos"
+                placeholder="Ej: Aplicaciones Web, Base de Datos"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-400"
                 {...register("asignatura")}
               />
@@ -454,7 +493,9 @@ const actualizarProyectoStore = storeProyectos(
 
           {/* Información del docente */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Información del Docente (opcional)</h3>
+            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+              <FaUserTie /> Información del Docente (opcional)
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm text-gray-600 mb-2">Nombre del docente</label>
@@ -469,7 +510,7 @@ const actualizarProyectoStore = storeProyectos(
                 <label className="block text-sm text-gray-600 mb-2">Email del docente</label>
                 <input
                   type="email"
-                  placeholder="correo@institucion.edu.ec"
+                  placeholder="correo@epn.edu.ec"
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-400"
                   {...register("docenteEmail")}
                 />
@@ -480,12 +521,14 @@ const actualizarProyectoStore = storeProyectos(
 
         {/* SECCIÓN 4: ENLACES Y VISIBILIDAD */}
         <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm">
-          <h2 className="text-xl font-bold text-gray-800 mb-6">🔗 Enlaces y Visibilidad</h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <FaLink /> Enlaces y Visibilidad
+          </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Repositorio (opcional)
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FaGithub /> Repositorio (opcional)
               </label>
               <input
                 type="url"
@@ -496,8 +539,8 @@ const actualizarProyectoStore = storeProyectos(
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Demo en vivo (opcional)
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FaRocket /> Demo en vivo (opcional)
               </label>
               <input
                 type="url"
@@ -515,8 +558,8 @@ const actualizarProyectoStore = storeProyectos(
                 className="w-5 h-5 text-red-600 rounded focus:ring-red-400"
                 {...register("publico")}
               />
-              <span className="text-gray-700">
-                Hacer proyecto público (visible para todos los usuarios)
+              <span className="text-gray-700 flex items-center gap-2">
+                <FaGlobe /> Hacer proyecto público (visible para todos los usuarios)
               </span>
             </label>
             <p className="text-sm text-gray-500 mt-2">
@@ -530,7 +573,7 @@ const actualizarProyectoStore = storeProyectos(
           <button
             type="submit"
             disabled={loading || tecnologias.length === 0}
-            className={`flex-1 py-3 px-4 rounded-lg font-semibold text-lg transition ${
+            className={`flex-1 py-3 px-4 rounded-lg font-semibold text-lg transition flex items-center justify-center gap-2 ${
               loading || tecnologias.length === 0
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-red-600 hover:bg-red-700 text-white'
@@ -538,35 +581,39 @@ const actualizarProyectoStore = storeProyectos(
           >
             {loading ? (
               <>
-                <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white inline-block mr-2"></span>
+                <FaSpinner className="animate-spin" />
                 {modo === 'crear' ? 'Creando proyecto...' : 'Actualizando proyecto...'}
               </>
             ) : (
-              modo === 'crear' ? 'Crear Proyecto' : 'Actualizar Proyecto'
+              <>
+                <FaCheckCircle />
+                {modo === 'crear' ? 'Crear Proyecto' : 'Actualizar Proyecto'}
+              </>
             )}
           </button>
 
           <button
             type="button"
             onClick={() => navigate('/dashboard/listar')}
-            className="py-3 px-6 rounded-lg font-semibold text-lg border border-gray-300 hover:bg-gray-50 transition"
+            className="py-3 px-6 rounded-lg font-semibold text-lg border border-gray-300 hover:bg-gray-50 transition flex items-center gap-2"
           >
-            Cancelar
+            <FaArrowLeft /> Cancelar
           </button>
         </div>
 
         {/* INFORMACIÓN ADICIONAL */}
         <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
-          <h3 className="font-semibold text-blue-800 mb-3">
-            💡 {modo === 'crear' ? 'Consejos para un buen proyecto' : 'Consejos para editar tu proyecto'}
+          <h3 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+            <FaLightbulb className="text-yellow-500" />
+            {modo === 'crear' ? 'Consejos para un buen proyecto' : 'Consejos para editar tu proyecto'}
           </h3>
           <ul className="text-blue-700 space-y-2 text-sm">
-            <li>• Sé claro y específico en el título y descripción</li>
-            <li>• Incluye todas las tecnologías que utilizaste</li>
-            <li>• Si es un proyecto académico, completa la información del docente</li>
-            <li>• Agrega enlaces a repositorio y demo si están disponibles</li>
-            {modo === 'crear' && <li>• Usa la IA para obtener sugerencias creativas de títulos</li>}
-            {modo === 'editar' && <li>• Actualiza el estado del proyecto según su progreso actual</li>}
+            <li className="flex items-center gap-2">• Sé claro y específico en el título y descripción</li>
+            <li className="flex items-center gap-2">• Incluye todas las tecnologías que utilizaste</li>
+            <li className="flex items-center gap-2">• Si es un proyecto académico, completa la información del docente</li>
+            <li className="flex items-center gap-2">• Agrega enlaces a repositorio y demo si están disponibles</li>
+            {modo === 'crear' && <li className="flex items-center gap-2">• Usa la IA para obtener sugerencias creativas de títulos</li>}
+            {modo === 'editar' && <li className="flex items-center gap-2">• Actualiza el estado del proyecto según su progreso actual</li>}
           </ul>
         </div>
       </form>

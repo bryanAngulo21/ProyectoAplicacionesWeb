@@ -1,6 +1,22 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { donacionService } from '../services/api';
+import {
+  FaDonate,
+  FaDollarSign,
+  FaCheckCircle,
+  FaSyncAlt,
+  FaFileExport,
+  FaUser,
+  FaEnvelope,
+  FaCalendarAlt,
+  FaChartBar,
+  FaList,
+  FaExclamationTriangle,
+  FaUsers,
+  FaFileAlt,
+  FaSpinner
+} from 'react-icons/fa';
 
 const DonacionesAdmin = () => {
   const [donaciones, setDonaciones] = useState([]);
@@ -87,30 +103,36 @@ const DonacionesAdmin = () => {
 
   return (
     <div className="p-6">
-      <h1 className='font-black text-3xl md:text-4xl text-gray-800 mb-2'>
+      <h1 className='font-black text-3xl md:text-4xl text-gray-800 mb-2 flex items-center gap-2'>
         Reportes de Donaciones
       </h1>
       <div className="w-20 h-1 bg-red-600 mb-6"></div>
-      <p className='mb-8 text-gray-600'>
+      <p className='mb-8 text-gray-600 flex items-center gap-2'>
         Vizualiza todas las donaciones recibidas en la plataforma
       </p>
 
       {/* Resumen */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-gradient-to-r from-red-600 to-red-800 text-white p-6 rounded-xl">
-          <h3 className="text-lg font-semibold mb-2">Total Donaciones</h3>
+          <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+            <FaDonate /> Total Donaciones
+          </h3>
           <p className="text-3xl font-bold">{stats.total}</p>
           <p className="text-sm opacity-90 mt-2">Transacciones registradas</p>
         </div>
 
         <div className="bg-gradient-to-r from-gray-600 to-gray-800 text-white p-6 rounded-xl">
-          <h3 className="text-lg font-semibold mb-2">Monto Total</h3>
+          <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+            <FaDollarSign /> Monto Total
+          </h3>
           <p className="text-3xl font-bold">${stats.montoTotal.toFixed(2)}</p>
           <p className="text-sm opacity-90 mt-2">USD recaudados</p>
         </div>
 
         <div className="bg-gradient-to-r from-red-600 to-red-800 text-white p-6 rounded-xl">
-          <h3 className="text-lg font-semibold mb-2">Donaciones Exitosas</h3>
+          <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+            <FaCheckCircle /> Donaciones Exitosas
+          </h3>
           <p className="text-3xl font-bold">{stats.exitosas}</p>
           <p className="text-sm opacity-90 mt-2">Transacciones completadas</p>
         </div>
@@ -120,9 +142,11 @@ const DonacionesAdmin = () => {
       <div className="bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
         <div className="p-6 border-b bg-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h2 className="font-bold text-xl text-gray-800">Todas las donaciones</h2>
-            <p className="text-sm text-gray-600 mt-1">
-              {donaciones.length} donaciones registradas
+            <h2 className="font-bold text-xl text-gray-800 flex items-center gap-2">
+              <FaDonate /> Todas las donaciones
+            </h2>
+            <p className="text-sm text-gray-600 mt-1 flex items-center gap-2">
+              <FaUsers /> {donaciones.length} donaciones registradas
             </p>
           </div>
           
@@ -131,19 +155,16 @@ const DonacionesAdmin = () => {
               onClick={cargarDonaciones}
               className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition flex items-center gap-2"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Actualizar
+              <FaSyncAlt /> Actualizar
             </button>
             
-            
+
           </div>
         </div>
 
         {donaciones.length === 0 ? (
           <div className="p-12 text-center">
-            <div className="text-gray-400 text-6xl mb-4">💸</div>
+            <FaDonate className="text-gray-400 text-6xl mb-4 mx-auto" />
             <h3 className="text-xl font-medium text-gray-600 mb-2">No hay donaciones registradas</h3>
             <p className="text-gray-500">Aún no se han recibido donaciones en la plataforma.</p>
           </div>
@@ -152,11 +173,27 @@ const DonacionesAdmin = () => {
             <table className="w-full">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="py-4 px-6 text-left text-gray-700 font-semibold">Donante</th>
-                  <th className="py-4 px-6 text-left text-gray-700 font-semibold">Monto</th>
+                  <th className="py-4 px-6 text-left text-gray-700 font-semibold">
+                    <div className="flex items-center gap-2">
+                      <FaUser /> Donante
+                    </div>
+                  </th>
+                  <th className="py-4 px-6 text-left text-gray-700 font-semibold">
+                    <div className="flex items-center gap-2">
+                      <FaDollarSign /> Monto
+                    </div>
+                  </th>
                   <th className="py-4 px-6 text-left text-gray-700 font-semibold">Estado</th>
-                  <th className="py-4 px-6 text-left text-gray-700 font-semibold">Fecha</th>
-                  <th className="py-4 px-6 text-left text-gray-700 font-semibold">Mensaje</th>
+                  <th className="py-4 px-6 text-left text-gray-700 font-semibold">
+                    <div className="flex items-center gap-2">
+                      <FaCalendarAlt /> Fecha
+                    </div>
+                  </th>
+                  <th className="py-4 px-6 text-left text-gray-700 font-semibold">
+                    <div className="flex items-center gap-2">
+                      <FaFileAlt /> Mensaje
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -165,36 +202,48 @@ const DonacionesAdmin = () => {
                     <td className="py-4 px-6">
                       {donacion.donante ? (
                         <div>
-                          <p className="font-medium text-gray-800">
-                            {donacion.donante.nombre} {donacion.donante.apellido}
+                          <p className="font-medium text-gray-800 flex items-center gap-2">
+                            <FaUser /> {donacion.donante.nombre} {donacion.donante.apellido}
                           </p>
-                          <p className="text-sm text-gray-500">{donacion.donante.email}</p>
+                          <p className="text-sm text-gray-500 flex items-center gap-2">
+                            <FaEnvelope /> {donacion.donante.email}
+                          </p>
                         </div>
                       ) : (
-                        <p className="text-gray-500 italic">Anónimo</p>
+                        <p className="text-gray-500 italic flex items-center gap-2">
+                          <FaUser /> Anónimo
+                        </p>
                       )}
                     </td>
                     <td className="py-4 px-6">
-                      <span className="font-bold text-lg text-green-600">
-                        ${donacion.monto?.toFixed(2) || '0.00'}
+                      <span className="font-bold text-lg text-green-600 flex items-center gap-2">
+                        <FaDollarSign /> {donacion.monto?.toFixed(2) || '0.00'}
                       </span>
                       <span className="text-xs text-gray-500 block">USD</span>
                     </td>
                     <td className="py-4 px-6">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2 ${
                         donacion.estado === 'exitosa' 
                           ? 'bg-green-100 text-green-800' 
                           : 'bg-red-100 text-red-800'
                       }`}>
-                        {donacion.estado === 'exitosa' ? '✅ Exitosa' : '❌ Fallida'}
+                        {donacion.estado === 'exitosa' ? (
+                          <>
+                            <FaCheckCircle /> Exitosa
+                          </>
+                        ) : (
+                          <>
+                            <FaExclamationTriangle /> Fallida
+                          </>
+                        )}
                       </span>
                     </td>
-                    <td className="py-4 px-6 text-gray-600 text-sm">
-                      {formatFecha(donacion.createdAt)}
+                    <td className="py-4 px-6 text-gray-600 text-sm flex items-center gap-2">
+                      <FaCalendarAlt /> {formatFecha(donacion.createdAt)}
                     </td>
                     <td className="py-4 px-6">
-                      <p className="text-gray-600 max-w-xs truncate" title={donacion.mensaje}>
-                        {donacion.mensaje || '—'}
+                      <p className="text-gray-600 max-w-xs truncate flex items-center gap-2" title={donacion.mensaje}>
+                        <FaFileAlt /> {donacion.mensaje || '—'}
                       </p>
                     </td>
                   </tr>

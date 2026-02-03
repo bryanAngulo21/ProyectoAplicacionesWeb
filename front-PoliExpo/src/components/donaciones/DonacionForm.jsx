@@ -40,119 +40,116 @@ const StripeDonationForm = ({ onDonationSuccess, onClose }) => {
     setFormData(prev => ({ ...prev, monto: monto.toString() }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  if (!stripe || !elements) {
+    toast.error('Stripe no está cargado. Recarga la página.');
+    return;
+  }
+
+  if (!formData.monto || parseFloat(formData.monto) < 1) {
+    toast.error('El monto mínimo es $1 USD');
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    console.log('Iniciando proceso de donación...');
     
-    if (!stripe || !elements) {
-      toast.error('Stripe no está cargado. Recarga la página.');
+    const cardElement = elements.getElement(CardElement);
+    
+    if (!cardElement) {
+      toast.error('No se pudo cargar el formulario de tarjeta');
+      setLoading(false);
       return;
     }
 
-    if (!formData.monto || parseFloat(formData.monto) < 1) {
-      toast.error('El monto mínimo es $1 USD');
+    const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+    });
+
+    if (stripeError) {
+      console.error('Error de Stripe:', stripeError);
+      toast.error(`Error: ${stripeError.message}`);
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
+    console.log('PaymentMethod creado:', paymentMethod.id);
 
-    try {
-      console.log('Iniciando proceso de donación...');
+    const donationData = {
+      paymentMethodId: paymentMethod.id,
+      monto: parseFloat(formData.monto),
+      mensaje: formData.mensaje || '',
+    };
+    
+    console.log('Enviando al backend:', donationData);
+    
+    const response = await donacionService.donateToPlatform(donationData);
+    console.log('Respuesta del backend:', response.data);
+    
+    if (response.data.requiereAccion && response.data.clientSecret) {
+      console.log('Procesando 3D Secure...');
       
-      const cardElement = elements.getElement(CardElement);
-      
-      if (!cardElement) {
-        toast.error('No se pudo cargar el formulario de tarjeta');
+      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
+        response.data.clientSecret
+      );
+
+      if (confirmError) {
+        console.error('Error 3D Secure:', confirmError);
+        toast.error(`Error en autenticación: ${confirmError.message}`);
         setLoading(false);
         return;
       }
 
-      const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: cardElement,
-      });
-
-      if (stripeError) {
-        console.error('Error de Stripe:', stripeError);
-        toast.error(`Error: ${stripeError.message}`);
-        setLoading(false);
-        return;
-      }
-
-      console.log('PaymentMethod creado:', paymentMethod.id);
-
-      const donationData = {
-        paymentMethodId: paymentMethod.id,
-        monto: parseFloat(formData.monto),
-        mensaje: formData.mensaje || '',
-      };
+      console.log('3D Secure completado:', paymentIntent.status);
       
-      console.log('Enviando al backend:', donationData);
-      
-      const response = await donacionService.donateToPlatform(donationData);
-      console.log('Respuesta del backend:', response.data);
-      
-      if (response.data.requiereAccion && response.data.clientSecret) {
-        console.log('Procesando 3D Secure...');
+      if (paymentIntent.status === 'succeeded') {
+        await donacionService.confirmDonation({
+          paymentIntentId: paymentIntent.id
+        });
         
-        const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
-          response.data.clientSecret
-        );
-
-        if (confirmError) {
-          console.error('Error 3D Secure:', confirmError);
-          toast.error(`Error en autenticación: ${confirmError.message}`);
-          setLoading(false);
-          return;
-        }
-
-        console.log('3D Secure completado:', paymentIntent.status);
-        
-        if (paymentIntent.status === 'succeeded') {
-          await donacionService.confirmDonation({
-            paymentIntentId: paymentIntent.id
-          });
-          
-          toast.success('¡Donación realizada con éxito! (3D Secure)');
-          
-          if (onDonationSuccess) {
-            onDonationSuccess(response.data.donacion || { monto: formData.monto });
-          }
-        }
-      } else {
-        console.log('Pago exitoso sin 3D Secure');
-        toast.success('¡Donación realizada con éxito!');
+        toast.success('¡Donación realizada con éxito! (3D Secure)');
         
         if (onDonationSuccess) {
           onDonationSuccess(response.data.donacion || { monto: formData.monto });
         }
       }
+    } else {
+      console.log('Pago exitoso sin 3D Secure');
+      toast.success('¡Donación realizada con éxito!');
       
-      setFormData({ monto: '', mensaje: '' });
-      cardElement.clear();
-      
-      if (onClose) {
-        setTimeout(() => onClose(), 2000);
+      if (onDonationSuccess) {
+        onDonationSuccess(response.data.donacion || { monto: formData.monto });
       }
-      
-    } catch (error) {
-      console.error('Error completo:', error);
-      console.error('Detalles del error:', error.response?.data);
-      
-      if (error.response?.status === 401) {
-        toast.error('Tu sesión expiró. Vuelve a iniciar sesión.');
-      } else if (error.response?.data?.msg) {
-        toast.error(error.response.data.msg);
-      } else if (error.message?.includes('Network Error')) {
-        toast.error('Error de conexión con el servidor. Verifica que el backend esté corriendo.');
-      } else if (error.message?.includes('timeout')) {
-        toast.error('Tiempo de espera agotado. Intenta nuevamente.');
-      } else {
-        toast.error('Error al procesar la donación');
-      }
-    } finally {
-      setLoading(false);
     }
-  };
+    
+    // Limpiar formulario solo después del éxito
+    setFormData({ monto: '', mensaje: '' });
+    cardElement.clear();
+    
+  } catch (error) {
+    console.error('Error completo:', error);
+    console.error('Detalles del error:', error.response?.data);
+    
+    if (error.response?.status === 401) {
+      toast.error('Tu sesión expiró. Vuelve a iniciar sesión.');
+    } else if (error.response?.data?.msg) {
+      toast.error(error.response.data.msg);
+    } else if (error.message?.includes('Network Error')) {
+      toast.error('Error de conexión con el servidor. Verifica que el backend esté corriendo.');
+    } else if (error.message?.includes('timeout')) {
+      toast.error('Tiempo de espera agotado. Intenta nuevamente.');
+    } else {
+      toast.error('Error al procesar la donación');
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">

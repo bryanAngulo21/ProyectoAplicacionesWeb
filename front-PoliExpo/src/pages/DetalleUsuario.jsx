@@ -2,6 +2,27 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { toast } from 'react-toastify';
 import { authService } from '../services/api';
+import {
+  FaArrowLeft,
+  FaUser,
+  FaEnvelope,
+  FaCrown,
+  FaUserGraduate,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaPhone,
+  FaGraduationCap,
+  FaIdCard,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaSyncAlt,
+  FaSignInAlt,
+  FaTrash,
+  FaUsers,
+  FaFileAlt,
+  FaBolt,
+  FaExclamationTriangle
+} from 'react-icons/fa';
 
 const DetalleUsuario = () => {
   const { id } = useParams();
@@ -65,14 +86,14 @@ const DetalleUsuario = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <span className="text-6xl mb-4 block">😕</span>
+          <FaExclamationTriangle className="text-6xl mb-4 mx-auto text-gray-400" />
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Usuario no encontrado</h1>
           <p className="text-gray-600 mb-8">El usuario que buscas no existe o fue eliminado</p>
           <Link
             to="/dashboard/usuarios"
-            className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
+            className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition inline-flex items-center gap-2"
           >
-            Volver a usuarios
+            <FaArrowLeft /> Volver a usuarios
           </Link>
         </div>
       </div>
@@ -88,7 +109,7 @@ const DetalleUsuario = () => {
               onClick={() => navigate('/dashboard/usuarios')}
               className="text-gray-600 hover:text-gray-800 flex items-center gap-1"
             >
-              ← Volver a usuarios
+              <FaArrowLeft /> Volver a usuarios
             </button>
             <span className="text-gray-400">|</span>
             <span className="text-sm text-gray-500">
@@ -103,9 +124,9 @@ const DetalleUsuario = () => {
         
         <button
           onClick={eliminarUsuario}
-          className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition"
+          className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition flex items-center gap-2"
         >
-          🗑️ Eliminar Usuario
+          <FaTrash /> Eliminar Usuario
         </button>
       </div>
       
@@ -115,51 +136,77 @@ const DetalleUsuario = () => {
         {/* Información principal */}
         <div className="lg:col-span-2">
           <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">📋 Información del Usuario</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <FaFileAlt /> Información del Usuario
+            </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Nombre completo</p>
+                <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                  <FaUser /> Nombre completo
+                </p>
                 <p className="text-lg font-medium text-gray-800">{usuario.nombre} {usuario.apellido}</p>
               </div>
               
               <div>
-                <p className="text-sm text-gray-500 mb-1">Email</p>
+                <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                  <FaEnvelope /> Email
+                </p>
                 <p className="text-lg font-medium text-gray-800">{usuario.email}</p>
               </div>
               
               <div>
                 <p className="text-sm text-gray-500 mb-1">Rol</p>
-                <span className={`px-4 py-2 rounded-full text-sm font-medium inline-block ${
+                <span className={`px-4 py-2 rounded-full text-sm font-medium inline-flex items-center gap-2 ${
                   usuario.rol === 'admin' 
                     ? 'bg-purple-100 text-purple-800' 
                     : 'bg-blue-100 text-blue-800'
                 }`}>
-                  {usuario.rol === 'admin' ? '👑 Administrador' : '👤 Estudiante'}
+                  {usuario.rol === 'admin' ? (
+                    <>
+                      <FaCrown /> Administrador
+                    </>
+                  ) : (
+                    <>
+                      <FaUserGraduate /> Estudiante
+                    </>
+                  )}
                 </span>
               </div>
               
               <div>
                 <p className="text-sm text-gray-500 mb-1">Estado de cuenta</p>
-                <span className={`px-4 py-2 rounded-full text-sm font-medium inline-block ${
+                <span className={`px-4 py-2 rounded-full text-sm font-medium inline-flex items-center gap-2 ${
                   usuario.status === true 
                     ? 'bg-green-100 text-green-800' 
                     : 'bg-red-100 text-red-800'
                 }`}>
-                  {usuario.status === true ? '✅ Activa' : '❌ Inactiva'}
+                  {usuario.status === true ? (
+                    <>
+                      <FaCheckCircle /> Activa
+                    </>
+                  ) : (
+                    <>
+                      <FaTimesCircle /> Inactiva
+                    </>
+                  )}
                 </span>
               </div>
               
               {usuario.celular && (
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">Celular</p>
+                  <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                    <FaPhone /> Celular
+                  </p>
                   <p className="text-lg font-medium text-gray-800">{usuario.celular}</p>
                 </div>
               )}
               
               {usuario.carrera && (
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">Carrera</p>
+                  <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                    <FaGraduationCap /> Carrera
+                  </p>
                   <p className="text-lg font-medium text-gray-800">{usuario.carrera}</p>
                 </div>
               )}
@@ -169,26 +216,34 @@ const DetalleUsuario = () => {
           {/* Información adicional */}
           {(usuario.direccion || usuario.cedula || usuario.nivel) && (
             <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-6">📝 Información Adicional</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <FaFileAlt /> Información Adicional
+              </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {usuario.cedula && (
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Cédula</p>
+                    <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                      <FaIdCard /> Cédula
+                    </p>
                     <p className="text-lg font-medium text-gray-800">{usuario.cedula}</p>
                   </div>
                 )}
                 
                 {usuario.nivel && (
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Nivel/Semestre</p>
+                    <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                      <FaGraduationCap /> Nivel/Semestre
+                    </p>
                     <p className="text-lg font-medium text-gray-800">Nivel {usuario.nivel}</p>
                   </div>
                 )}
                 
                 {usuario.direccion && (
                   <div className="md:col-span-2">
-                    <p className="text-sm text-gray-500 mb-1">Dirección</p>
+                    <p className="text-sm text-gray-500 mb-1 flex items-center gap-2">
+                      <FaMapMarkerAlt /> Dirección
+                    </p>
                     <p className="text-lg font-medium text-gray-800">{usuario.direccion}</p>
                   </div>
                 )}
@@ -201,7 +256,9 @@ const DetalleUsuario = () => {
         <div className="space-y-6">
           {/* Fechas */}
           <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="font-bold text-gray-800 mb-4 text-lg">📅 Fechas</h3>
+            <h3 className="font-bold text-gray-800 mb-4 text-lg flex items-center gap-2">
+              <FaCalendarAlt /> Fechas
+            </h3>
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-500">Fecha de registro</p>
@@ -210,14 +267,18 @@ const DetalleUsuario = () => {
               
               {usuario.updatedAt && (
                 <div>
-                  <p className="text-sm text-gray-500">Última actualización</p>
+                  <p className="text-sm text-gray-500 flex items-center gap-2">
+                    <FaSyncAlt /> Última actualización
+                  </p>
                   <p className="font-medium">{formatearFecha(usuario.updatedAt)}</p>
                 </div>
               )}
               
               {usuario.lastLogin && (
                 <div>
-                  <p className="text-sm text-gray-500">Último inicio de sesión</p>
+                  <p className="text-sm text-gray-500 flex items-center gap-2">
+                    <FaSignInAlt /> Último inicio de sesión
+                  </p>
                   <p className="font-medium">{formatearFecha(usuario.lastLogin)}</p>
                 </div>
               )}
@@ -226,21 +287,23 @@ const DetalleUsuario = () => {
 
           {/* Acciones rápidas */}
           <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg p-6">
-            <h3 className="font-bold text-gray-800 mb-4 text-lg">⚡ Acciones</h3>
+            <h3 className="font-bold text-gray-800 mb-4 text-lg flex items-center gap-2">
+              <FaBolt /> Acciones
+            </h3>
             <div className="space-y-3">
               <button
                 onClick={() => navigate(`/dashboard/usuarios`)}
                 className="w-full bg-white border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-800 px-4 py-3 rounded-lg text-left transition flex items-center gap-3"
               >
-                <span>📋</span>
+                <FaUsers className="text-gray-600" />
                 <span>Ver todos los usuarios</span>
               </button>
               
               <button
                 onClick={eliminarUsuario}
-                className="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg text-center transition font-medium"
+                className="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg text-center transition font-medium flex items-center justify-center gap-2"
               >
-                🗑️ Eliminar este usuario
+                <FaTrash /> Eliminar este usuario
               </button>
             </div>
           </div>

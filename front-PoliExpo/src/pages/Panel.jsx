@@ -3,6 +3,21 @@ import { Link } from 'react-router';
 import { toast } from 'react-toastify';
 import storeAuth from '../context/storeAuth';
 import storeProfile from '../context/storeProfile';
+import {
+  FaChartBar,
+  FaUsers,
+  FaEye,
+  FaHeart,
+  FaDonate,
+  FaTag,
+  FaGift,
+  FaArrowRight,
+  FaPlus,
+  FaGraduationCap,
+  FaUser,
+  FaCalendar,
+  FaDollarSign
+} from 'react-icons/fa';
 
 // Importamos los servicios
 import { dashboardService, proyectoService } from '../services/api';
@@ -62,12 +77,10 @@ const Panel = () => {
     <div>
       {/* ENCABEZADO */}
       <div className="mb-8">
-        <h1 className='font-black text-4xl text-gray-500'>
-          Dashboard {isAdmin ? 'Administrador' : 'Estudiante'}
+        <h1 className='font-black text-4xl text-gray-500 flex items-center gap-2'>
+           Dashboard {isAdmin ? 'Administrador' : 'Estudiante'}
         </h1>
         <hr className='my-4 border-t-2 border-gray-300' />
-        
-       
       </div>
 
       {/* ESTADÍSTICAS PRINCIPALES */}
@@ -81,7 +94,7 @@ const Panel = () => {
               <h3 className="text-lg font-semibold text-gray-700">
                 {isAdmin ? 'Total Proyectos' : 'Mis Proyectos'}
               </h3>
-              <span className="text-2xl">📊</span>
+              <FaChartBar className="text-2xl text-gray-600" />
             </div>
             <p className="text-3xl font-bold text-gray-800">
               {isAdmin 
@@ -102,7 +115,11 @@ const Panel = () => {
               <h3 className="text-lg font-semibold text-gray-700">
                 {isAdmin ? 'Estudiantes' : 'Vistas'}
               </h3>
-              <span className="text-2xl">{isAdmin ? '👥' : '👁️'}</span>
+              {isAdmin ? (
+                <FaUsers className="text-2xl text-gray-600" />
+              ) : (
+                <FaEye className="text-2xl text-gray-600" />
+              )}
             </div>
             <p className="text-3xl font-bold text-gray-800">
               {isAdmin 
@@ -118,7 +135,11 @@ const Panel = () => {
               <h3 className="text-lg font-semibold text-gray-700">
                 {isAdmin ? 'Donaciones' : 'Likes'}
               </h3>
-              <span className="text-2xl">{isAdmin ? '💰' : '👍'}</span>
+              {isAdmin ? (
+                <FaDonate className="text-2xl text-gray-600" />
+              ) : (
+                <FaHeart className="text-2xl text-gray-600" />
+              )}
             </div>
             <p className="text-3xl font-bold text-gray-800">
               {isAdmin 
@@ -139,7 +160,11 @@ const Panel = () => {
               <h3 className="text-lg font-semibold text-gray-700">
                 {isAdmin ? 'Categorías' : 'Mis Donaciones'}
               </h3>
-              <span className="text-2xl">{isAdmin ? '🏷️' : '💝'}</span>
+              {isAdmin ? (
+                <FaTag className="text-2xl text-gray-600" />
+              ) : (
+                <FaGift className="text-2xl text-gray-600" />
+              )}
             </div>
             <p className="text-3xl font-bold text-gray-800">
               {isAdmin 
@@ -156,19 +181,18 @@ const Panel = () => {
         </div>
       </div>
 
-      
-
       {/* PROYECTOS RECIENTES */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className='font-bold text-2xl text-gray-700'>
+          <h2 className='font-bold text-2xl text-gray-700 flex items-center gap-2'>
+            <FaGraduationCap />
             {isAdmin ? 'Proyectos Recientes' : 'Proyectos Destacados'}
           </h2>
           <Link 
             to={isAdmin ? "/dashboard/explorar" : "/dashboard/explorar"} 
-            className="text-gray-600 hover:text-gray-800"
+            className="text-gray-600 hover:text-gray-800 flex items-center gap-1"
           >
-            Ver todos →
+            Ver todos <FaArrowRight />
           </Link>
         </div>
 
@@ -185,15 +209,19 @@ const Panel = () => {
                       {proyecto.categoria}
                     </span>
                     {isAdmin && proyecto.autor && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        Por: {proyecto.autor.nombre}
+                      <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                        <FaUser /> Por: {proyecto.autor.nombre}
                       </p>
                     )}
                   </div>
                   
                   <div className="flex gap-4">
-                    <span className="text-gray-500 text-sm">👍 {proyecto.likes?.length || 0}</span>
-                    <span className="text-gray-500 text-sm">👁️ {proyecto.vistas || 0}</span>
+                    <span className="text-gray-500 text-sm flex items-center gap-1">
+                      <FaHeart /> {proyecto.likes?.length || 0}
+                    </span>
+                    <span className="text-gray-500 text-sm flex items-center gap-1">
+                      <FaEye /> {proyecto.vistas || 0}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -205,9 +233,9 @@ const Panel = () => {
             {!isAdmin && (
               <Link 
                 to="/dashboard/create" 
-                className="text-gray-600 hover:text-gray-800 underline mt-2 inline-block"
+                className="text-gray-600 hover:text-gray-800 underline mt-2 inline-block flex items-center gap-1 justify-center"
               >
-                Crear primer proyecto
+                <FaPlus /> Crear primer proyecto
               </Link>
             )}
           </div>
@@ -216,10 +244,11 @@ const Panel = () => {
 
       {/* SECCIÓN ESPECÍFICA PARA ADMIN */}
       {isAdmin && stats?.ultimasDonaciones?.length > 0 && (
-        
         <div className="bg-white border border-gray-200 p-6 rounded-lg">
-          <div className="mb-10">
-        <h2 className='font-bold text-2xl text-gray-700 mb-4'>Resumen</h2>
+          <h3 className="font-bold text-xl text-gray-800 mb-4 flex items-center gap-2">
+            <FaDonate /> Últimas Donaciones
+          </h3>
+          <div className="space-y-3">
             {stats.ultimasDonaciones.slice(0, 3).map((donacion) => (
               <div key={donacion._id} className="border-b pb-3 last:border-0">
                 <div className="flex justify-between items-start">
@@ -232,9 +261,11 @@ const Panel = () => {
                     )}
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-green-600">${donacion.monto.toFixed(2)}</p>
-                    <p className="text-xs text-gray-400">
-                      {new Date(donacion.createdAt).toLocaleDateString()}
+                    <p className="font-bold text-green-600 flex items-center gap-1 justify-end">
+                      <FaDollarSign /> {donacion.monto.toFixed(2)}
+                    </p>
+                    <p className="text-xs text-gray-400 flex items-center gap-1 justify-end">
+                      <FaCalendar /> {new Date(donacion.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>

@@ -118,7 +118,9 @@ const eliminarProyecto = async (req, res) => {
       return res.status(404).json({ msg: 'Proyecto no encontrado' });
     }
 
-    if (proyecto.autor.toString() !== req.estudianteHeader._id.toString()) {
+    // Permitir al autor O a un admin eliminar
+    if (proyecto.autor.toString() !== req.estudianteHeader._id.toString() && 
+        req.estudianteHeader.rol !== 'admin') {
       return res.status(403).json({ msg: 'Acción no permitida' });
     }
 

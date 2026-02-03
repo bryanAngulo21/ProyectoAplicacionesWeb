@@ -2,6 +2,29 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { toast, ToastContainer } from 'react-toastify';
 import { proyectoService } from '../services/api';
+import {
+  FaArrowLeft,
+  FaHeart,
+  FaRegHeart,
+  FaFileAlt,
+  FaTools,
+  FaComments,
+  FaEye,
+  FaThumbsUp,
+  FaChartBar,
+  FaCalendarAlt,
+  FaInfoCircle,
+  FaGraduationCap,
+  FaLink,
+  FaGithub,
+  FaRocket,
+  FaUser,
+  FaBook,
+  FaStar,
+  FaCalendar,
+  FaUserTie,
+  FaExternalLinkAlt
+} from 'react-icons/fa';
 
 const DetalleProyecto = () => {
   const { id } = useParams();
@@ -11,9 +34,15 @@ const DetalleProyecto = () => {
   const [nuevoComentario, setNuevoComentario] = useState('');
   const [loadingLike, setLoadingLike] = useState(false);
   const [loadingComentario, setLoadingComentario] = useState(false);
+  
+  // Obtener datos del usuario actual
+  const [usuarioActual, setUsuarioActual] = useState(null);
 
   useEffect(() => {
     cargarProyecto();
+    // Obtener usuario actual del localStorage
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    setUsuarioActual(userData);
   }, [id]);
 
   const cargarProyecto = async () => {
@@ -31,17 +60,18 @@ const DetalleProyecto = () => {
   };
 
   const handleDarLike = async () => {
+    // Verificar si el usuario está autenticado
+    if (!usuarioActual) {
+      toast.error('Debes iniciar sesión para dar like');
+      navigate('/login');
+      return;
+    }
+
     setLoadingLike(true);
     try {
-      await proyectoService.like(id);
+      const response = await proyectoService.like(id);
       toast.success('¡Like agregado!');
-      
-      // Actualizar el contador de likes localmente
-      setProyecto(prev => ({
-        ...prev,
-        likes: [...(prev.likes || []), 'user'], // Simulación
-        vistas: prev.vistas // Mantener vistas
-      }));
+      cargarProyecto(); // Recargar para obtener datos actualizados
     } catch (error) {
       console.error('Error al dar like:', error);
       toast.error('Error al dar like');
@@ -51,16 +81,17 @@ const DetalleProyecto = () => {
   };
 
   const handleQuitarLike = async () => {
+    if (!usuarioActual) {
+      toast.error('Debes iniciar sesión para quitar like');
+      navigate('/login');
+      return;
+    }
+
     setLoadingLike(true);
     try {
-      await proyectoService.unlike(id);
+      const response = await proyectoService.unlike(id);
       toast.success('Like removido');
-      
-      // Actualizar el contador de likes localmente
-      setProyecto(prev => ({
-        ...prev,
-        likes: prev.likes?.filter(like => like !== 'user') || []
-      }));
+      cargarProyecto(); // Recargar para obtener datos actualizados
     } catch (error) {
       console.error('Error al quitar like:', error);
       toast.error('Error al quitar like');
@@ -82,8 +113,6 @@ const DetalleProyecto = () => {
       await proyectoService.addComment(id, nuevoComentario);
       toast.success('Comentario agregado');
       setNuevoComentario('');
-      
-      // Recargar proyecto para ver el nuevo comentario
       cargarProyecto();
     } catch (error) {
       console.error('Error al agregar comentario:', error);
@@ -104,9 +133,37 @@ const DetalleProyecto = () => {
   };
 
   const yaDioLike = () => {
-    // En un caso real, verificarías si el usuario actual está en el array de likes
-    // Por ahora simulamos con un valor fijo
-    return proyecto?.likes?.includes('user') || false;
+    if (!usuarioActual || !proyecto?.likes) {
+      return false;
+    }
+    
+    // Verificar si el usuario actual está en el array de likes
+    // Dependiendo de cómo esté estructurado tu backend, podría ser:
+    // 1. Un array de IDs de usuario
+    // 2. Un array de objetos con _id
+    // 3. Un array de strings con los IDs
+    
+    const userId = usuarioActual._id || usuarioActual.id;
+    
+    // Intentar diferentes formas de verificar
+    if (Array.isArray(proyecto.likes)) {
+      // Si likes es un array de IDs de usuario (strings)
+      if (proyecto.likes.includes(userId)) {
+        return true;
+      }
+      
+      // Si likes es un array de objetos con propiedad _id
+      const likeDelUsuario = proyecto.likes.find(like => {
+        if (typeof like === 'object' && like !== null) {
+          return like._id === userId || like.id === userId || like.usuario === userId;
+        }
+        return false;
+      });
+      
+      return !!likeDelUsuario;
+    }
+    
+    return false;
   };
 
   if (loading) {
@@ -124,19 +181,21 @@ const DetalleProyecto = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <span className="text-6xl mb-4 block">😕</span>
+          <FaBook className="text-6xl mb-4 mx-auto text-gray-400" />
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Proyecto no encontrado</h1>
           <p className="text-gray-600 mb-8">El proyecto que buscas no existe o fue eliminado</p>
           <Link
             to="/dashboard/explorar"
-            className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
+            className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition inline-flex items-center gap-2"
           >
-            Volver a explorar proyectos
+            <FaArrowLeft /> Volver a explorar proyectos
           </Link>
         </div>
       </div>
     );
   }
+
+  const usuarioDioLike = yaDioLike();
 
   return (
     <div>
@@ -151,12 +210,8 @@ const DetalleProyecto = () => {
                 onClick={() => navigate('/dashboard/explorar')}
                 className="text-gray-600 hover:text-gray-800 flex items-center gap-1"
               >
-                ← Volver
+                <FaArrowLeft /> Volver
               </button>
-              <span className="text-gray-400">|</span>
-              <span className="text-sm text-gray-500">
-                {proyecto.categoria === 'academico' ? '📚 Académico' : '🌟 Extracurricular'}
-              </span>
             </div>
             
             <h1 className="font-black text-3xl md:text-4xl text-gray-800 mb-2">
@@ -172,24 +227,37 @@ const DetalleProyecto = () => {
           
           {/* Botones de acción */}
           <div className="flex gap-2">
-            <button
-              onClick={yaDioLike() ? handleQuitarLike : handleDarLike}
-              disabled={loadingLike}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
-                yaDioLike() 
-                  ? 'bg-red-100 text-red-600 hover:bg-red-200' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {loadingLike ? (
-                <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></span>
-              ) : yaDioLike() ? (
-                '❤️ Quitar like'
-              ) : (
-                '🤍 Dar like'
-              )}
-              <span className="font-bold">({proyecto.likes?.length || 0})</span>
-            </button>
+            {usuarioActual ? (
+              <button
+                onClick={usuarioDioLike ? handleQuitarLike : handleDarLike}
+                disabled={loadingLike}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
+                  usuarioDioLike 
+                    ? 'bg-red-100 text-red-600 hover:bg-red-200' 
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {loadingLike ? (
+                  <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></span>
+                ) : usuarioDioLike ? (
+                  <>
+                    <FaHeart /> Quitar like
+                  </>
+                ) : (
+                  <>
+                    <FaRegHeart /> Dar like
+                  </>
+                )}
+                <span className="font-bold">({proyecto.likes?.length || 0})</span>
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition"
+              >
+                <FaRegHeart /> Inicia sesión para dar like
+              </Link>
+            )}
           </div>
         </div>
         
@@ -203,7 +271,7 @@ const DetalleProyecto = () => {
           {/* DESCRIPCIÓN */}
           <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <span>📋</span> Descripción del Proyecto
+              <FaFileAlt className="text-gray-600" /> Descripción del Proyecto
             </h2>
             <div className="prose max-w-none">
               <p className="text-gray-700 whitespace-pre-line leading-relaxed">
@@ -216,7 +284,7 @@ const DetalleProyecto = () => {
           {proyecto.tecnologias && proyecto.tecnologias.length > 0 && (
             <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span>🛠️</span> Tecnologías Utilizadas
+                <FaTools className="text-gray-600" /> Tecnologías Utilizadas
               </h2>
               <div className="flex flex-wrap gap-3">
                 {proyecto.tecnologias.map((tech, index) => (
@@ -235,50 +303,64 @@ const DetalleProyecto = () => {
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                <span>💬</span> Comentarios ({proyecto.comentarios?.length || 0})
+                <FaComments className="text-gray-600" /> Comentarios ({proyecto.comentarios?.length || 0})
               </h2>
               <div className="flex items-center gap-4 text-gray-600">
                 <span className="flex items-center gap-1">
-                  <span>👁️</span> {proyecto.vistas || 0} vistas
+                  <FaEye /> {proyecto.vistas || 0} vistas
                 </span>
                 <span className="flex items-center gap-1">
-                  <span>👍</span> {proyecto.likes?.length || 0} likes
+                  <FaThumbsUp /> {proyecto.likes?.length || 0} likes
                 </span>
               </div>
             </div>
 
             {/* FORMULARIO DE COMENTARIO */}
-            <form onSubmit={handleAgregarComentario} className="mb-8">
-              <div className="mb-4">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Agregar un comentario
-                </label>
-                <textarea
-                  value={nuevoComentario}
-                  onChange={(e) => setNuevoComentario(e.target.value)}
-                  placeholder="Comparte tu opinión sobre este proyecto..."
-                  className="w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-red-400 min-h-[100px]"
-                  rows="3"
-                  maxLength="500"
-                />
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-sm text-gray-500">
-                    {nuevoComentario.length}/500 caracteres
-                  </span>
-                  <button
-                    type="submit"
-                    disabled={loadingComentario || !nuevoComentario.trim()}
-                    className={`px-6 py-2 rounded-lg font-medium transition ${
-                      loadingComentario || !nuevoComentario.trim()
-                        ? 'bg-gray-300 cursor-not-allowed'
-                        : 'bg-gray-800 hover:bg-gray-700 text-white'
-                    }`}
-                  >
-                    {loadingComentario ? 'Publicando...' : 'Publicar comentario'}
-                  </button>
+            {usuarioActual ? (
+              <form onSubmit={handleAgregarComentario} className="mb-8">
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Agregar un comentario
+                  </label>
+                  <textarea
+                    value={nuevoComentario}
+                    onChange={(e) => setNuevoComentario(e.target.value)}
+                    placeholder="Comparte tu opinión sobre este proyecto..."
+                    className="w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-red-400 min-h-[100px]"
+                    rows="3"
+                    maxLength="500"
+                  />
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-sm text-gray-500">
+                      {nuevoComentario.length}/500 caracteres
+                    </span>
+                    <button
+                      type="submit"
+                      disabled={loadingComentario || !nuevoComentario.trim()}
+                      className={`px-6 py-2 rounded-lg font-medium transition inline-flex items-center gap-2 ${
+                        loadingComentario || !nuevoComentario.trim()
+                          ? 'bg-gray-300 cursor-not-allowed'
+                          : 'bg-gray-800 hover:bg-gray-700 text-white'
+                      }`}
+                    >
+                      {loadingComentario ? 'Publicando...' : (
+                        <>
+                          <FaComments /> Publicar comentario
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
+              </form>
+            ) : (
+              <div className="mb-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-yellow-700">
+                  <Link to="/login" className="text-blue-600 hover:underline">
+                    Inicia sesión
+                  </Link> para poder comentar en este proyecto.
+                </p>
               </div>
-            </form>
+            )}
 
             {/* LISTA DE COMENTARIOS */}
             <div className="space-y-6">
@@ -289,9 +371,7 @@ const DetalleProyecto = () => {
                       {/* Avatar */}
                       <div className="flex-shrink-0">
                         <div className="w-12 h-12 bg-gradient-to-r from-red-100 to-red-200 rounded-full flex items-center justify-center">
-                          <span className="text-red-600 font-bold text-lg">
-                            {comentario.estudiante?.nombre?.charAt(0) || 'U'}
-                          </span>
+                          <FaUser className="text-red-600 text-lg" />
                         </div>
                       </div>
                       
@@ -318,7 +398,7 @@ const DetalleProyecto = () => {
                 ))
               ) : (
                 <div className="text-center py-8">
-                  <span className="text-4xl mb-4 block">💬</span>
+                  <FaComments className="text-4xl mb-4 mx-auto text-gray-300" />
                   <p className="text-gray-500">No hay comentarios aún</p>
                   <p className="text-gray-400 text-sm mt-1">¡Sé el primero en comentar!</p>
                 </div>
@@ -327,36 +407,39 @@ const DetalleProyecto = () => {
           </div>
         </div>
 
+        {/* Resto del código se mantiene igual... */}
         {/* COLUMNA DERECHA - INFORMACIÓN LATERAL */}
         <div className="space-y-6">
           {/* ESTADÍSTICAS */}
           <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="font-bold text-gray-800 mb-4 text-lg">📊 Estadísticas</h3>
+            <h3 className="font-bold text-gray-800 mb-4 text-lg flex items-center gap-2">
+              <FaChartBar className="text-gray-600" /> Estadísticas
+            </h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-gray-600 flex items-center gap-2">
-                  <span className="text-xl">👁️</span> Vistas
+                  <FaEye className="text-gray-500" /> Vistas
                 </span>
                 <span className="font-bold text-lg">{proyecto.vistas || 0}</span>
               </div>
               
               <div className="flex items-center justify-between">
                 <span className="text-gray-600 flex items-center gap-2">
-                  <span className="text-xl">👍</span> Likes
+                  <FaThumbsUp className="text-gray-500" /> Likes
                 </span>
                 <span className="font-bold text-lg">{proyecto.likes?.length || 0}</span>
               </div>
               
               <div className="flex items-center justify-between">
                 <span className="text-gray-600 flex items-center gap-2">
-                  <span className="text-xl">💬</span> Comentarios
+                  <FaComments className="text-gray-500" /> Comentarios
                 </span>
                 <span className="font-bold text-lg">{proyecto.comentarios?.length || 0}</span>
               </div>
               
               <div className="flex items-center justify-between">
                 <span className="text-gray-600 flex items-center gap-2">
-                  <span className="text-xl">📅</span> Creado
+                  <FaCalendarAlt className="text-gray-500" /> Creado
                 </span>
                 <span className="font-semibold">{new Date(proyecto.createdAt).toLocaleDateString()}</span>
               </div>
@@ -365,19 +448,31 @@ const DetalleProyecto = () => {
 
           {/* INFORMACIÓN DEL PROYECTO */}
           <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="font-bold text-gray-800 mb-4 text-lg">ℹ️ Información del Proyecto</h3>
+            <h3 className="font-bold text-gray-800 mb-4 text-lg flex items-center gap-2">
+              <FaInfoCircle className="text-gray-600" /> Información del Proyecto
+            </h3>
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-500">Categoría</p>
                 <p className="font-medium flex items-center gap-2 mt-1">
-                  {proyecto.categoria === 'academico' ? '📚 Académico' : '🌟 Extracurricular'}
+                  {proyecto.categoria === 'academico' ? (
+                    <>
+                      <FaBook className="text-gray-600" /> Académico
+                    </>
+                  ) : (
+                    <>
+                      <FaStar className="text-gray-600" /> Extracurricular
+                    </>
+                  )}
                 </p>
               </div>
               
               {proyecto.carrera && (
                 <div>
                   <p className="text-sm text-gray-500">Carrera</p>
-                  <p className="font-medium">{proyecto.carrera}</p>
+                  <p className="font-medium flex items-center gap-2">
+                    <FaGraduationCap className="text-gray-600" /> {proyecto.carrera}
+                  </p>
                 </div>
               )}
               
@@ -404,14 +499,18 @@ const DetalleProyecto = () => {
               {proyecto.fechaInicio && (
                 <div>
                   <p className="text-sm text-gray-500">Fecha de inicio</p>
-                  <p className="font-medium">{new Date(proyecto.fechaInicio).toLocaleDateString()}</p>
+                  <p className="font-medium flex items-center gap-2">
+                    <FaCalendar className="text-gray-600" /> {new Date(proyecto.fechaInicio).toLocaleDateString()}
+                  </p>
                 </div>
               )}
               
               {proyecto.fechaFin && (
                 <div>
                   <p className="text-sm text-gray-500">Fecha de finalización</p>
-                  <p className="font-medium">{new Date(proyecto.fechaFin).toLocaleDateString()}</p>
+                  <p className="font-medium flex items-center gap-2">
+                    <FaCalendar className="text-gray-600" /> {new Date(proyecto.fechaFin).toLocaleDateString()}
+                  </p>
                 </div>
               )}
             </div>
@@ -420,7 +519,9 @@ const DetalleProyecto = () => {
           {/* INFORMACIÓN DEL DOCENTE */}
           {proyecto.docente && (
             <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="font-bold text-gray-800 mb-4 text-lg">👨‍🏫 Docente</h3>
+              <h3 className="font-bold text-gray-800 mb-4 text-lg flex items-center gap-2">
+                <FaUserTie className="text-gray-600" /> Docente
+              </h3>
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-gray-500">Nombre</p>
@@ -440,7 +541,9 @@ const DetalleProyecto = () => {
           {/* ENLACES EXTERNOS */}
           {(proyecto.repositorio || proyecto.enlaceDemo) && (
             <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="font-bold text-gray-800 mb-4 text-lg">🔗 Enlaces</h3>
+              <h3 className="font-bold text-gray-800 mb-4 text-lg flex items-center gap-2">
+                <FaLink className="text-gray-600" /> Enlaces
+              </h3>
               <div className="space-y-3">
                 {proyecto.repositorio && (
                   <a
@@ -450,12 +553,13 @@ const DetalleProyecto = () => {
                     className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition group"
                   >
                     <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
-                      <span className="text-white">📁</span>
+                      <FaGithub className="text-white text-lg" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium text-gray-800 group-hover:text-red-600">Repositorio</p>
-                      <p className="text-xs text-gray-500 truncate max-w-[180px]">{proyecto.repositorio}</p>
+                      <p className="text-xs text-gray-500 truncate">{proyecto.repositorio}</p>
                     </div>
+                    <FaExternalLinkAlt className="text-gray-400 group-hover:text-gray-600" />
                   </a>
                 )}
                 
@@ -467,57 +571,18 @@ const DetalleProyecto = () => {
                     className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition group"
                   >
                     <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-                      <span className="text-white">🚀</span>
+                      <FaRocket className="text-white text-lg" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium text-gray-800 group-hover:text-red-600">Demo en vivo</p>
-                      <p className="text-xs text-gray-500 truncate max-w-[180px]">{proyecto.enlaceDemo}</p>
+                      <p className="text-xs text-gray-500 truncate">{proyecto.enlaceDemo}</p>
                     </div>
+                    <FaExternalLinkAlt className="text-gray-400 group-hover:text-gray-600" />
                   </a>
                 )}
               </div>
             </div>
           )}
-
-          {/* ACCIONES RÁPIDAS */}
-          <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg p-6">
-            <h3 className="font-bold text-gray-800 mb-4 text-lg">⚡ Acciones Rápidas</h3>
-            <div className="space-y-3">
-              <button
-                onClick={() => navigate(`/dashboard/actualizar/${proyecto._id}`)}
-                className="w-full bg-white border border-gray-300 hover:border-red-300 text-gray-700 hover:text-red-600 px-4 py-3 rounded-lg text-left transition flex items-center gap-3"
-              >
-                <span>✏️</span>
-                <span>Editar este proyecto</span>
-              </button>
-              
-              <button
-                onClick={() => {
-                  if (navigator.share) {
-                    navigator.share({
-                      title: proyecto.titulo,
-                      text: proyecto.descripcion.substring(0, 100) + '...',
-                      url: window.location.href,
-                    });
-                  } else {
-                    navigator.clipboard.writeText(window.location.href);
-                    toast.success('Enlace copiado al portapapeles');
-                  }
-                }}
-                className="w-full bg-white border border-gray-300 hover:border-blue-300 text-gray-700 hover:text-blue-600 px-4 py-3 rounded-lg text-left transition flex items-center gap-3"
-              >
-                <span>📤</span>
-                <span>Compartir proyecto</span>
-              </button>
-              
-              <Link
-                to="/dashboard/explorar"
-                className="block w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg text-center transition"
-              >
-                Explorar más proyectos
-              </Link>
-            </div>
-          </div>
         </div>
       </div>
     </div>
