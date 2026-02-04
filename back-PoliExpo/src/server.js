@@ -109,3 +109,36 @@ connection();
 // Exportar la instancia de express por medio de app
 export default  app
 
+import cors from 'cors';
+
+// Configuración de CORS dinámica
+const corsOptions = {
+  origin: function (origin, callback) {
+    // En desarrollo, permitir cualquier origen
+    if (process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    
+    // En producción, solo orígenes específicos
+    const allowedOrigins = [
+      'https://poli-expo.netlify.app',
+      'https://poliexpoback.onrender.com',
+      'http://localhost:5173',
+      'http://localhost:3000'
+    ];
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
+
+// Manejar preflight OPTIONS requests
+app.options('*', cors(corsOptions));

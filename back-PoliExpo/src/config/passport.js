@@ -10,7 +10,9 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `${process.env.URL_BACKEND}/auth/google/callback`,
+      callbackURL: process.env.NODE_ENV === 'production'
+  ? 'https://poliexpoback.onrender.com/api/auth/google/callback'
+  : 'http://localhost:3000/api/auth/google/callback',
       passReqToCallback: true  
     },
     async (req, accessToken, refreshToken, profile, done) => {
@@ -51,10 +53,7 @@ passport.use(
         
         await nuevoEstudiante.save();
         done(null, nuevoEstudiante);
-        console.log('🌐 ENTORNO:', process.env.NODE_ENV);
-console.log('🔗 URL_BACKEND:', process.env.URL_BACKEND);
-console.log('🔄 Callback URL:', `${process.env.URL_BACKEND}/auth/google/callback`);
-
+       
       } catch (error) {
         done(error, null);
       }
