@@ -77,13 +77,13 @@ const proyectoSchema = new Schema({
     type: Number,
     default: 0,
   },
-  docente: {  // ← YA LO TIENES
+  docente: {  
     nombre: String,
     email: String,
   },
 
   // SOLO AGREGAR ESTOS CAMPOS NUEVOS:
-  asignatura: {  // ← NUEVO del compañero
+  asignatura: {  
     type: String,
     trim: true,
   },
